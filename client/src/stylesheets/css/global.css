@@ -1,0 +1,18 @@
+@import "./reset.css";
+@import "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap";
+
+:root{
+
+    /* colors */
+    --light-primary-text:#FCFCFC;
+    --dark-primary-text:#1E3231;
+    --dark-button:#485665;
+    --light-button:#D0A5C0;
+    --light-background:#F7F7FF;
+    --dark-background:#495867;
+
+    /* width & height */
+    --app-max-width:1000px;
+    --nav-height:60px;
+
+}

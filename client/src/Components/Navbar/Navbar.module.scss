@@ -1,0 +1,43 @@
+
+@import "src/stylesheets/helpers/placeholder";
+.navbar{
+    width:100%;
+    padding: 14px 0;
+    position: sticky;
+    z-index: 999;
+    top:0;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    transition: all .2s;
+    *{
+        transition: inherit;
+    }
+
+}
+.content{
+    height:100%;
+    padding:0 20px;
+    max-width: var(--app-max-width);
+    margin:0 auto;
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    grid-template-rows: 1fr;
+    div{
+        display:flex;
+        align-items: center;
+    }
+}
+.groupSearch{
+    display: grid;
+    grid-gap: 11px;
+}
+
+
+.groupNotification{
+    div{
+        margin-left: 10px;
+    }
+    img{
+       @extend %image;
+    }
+}
