@@ -12,7 +12,7 @@ const routes= [
     {
         name:'user',
         path:'/user',
-        Component:()=><h1>user page</h1>
+        Component:()=>(<h1>user</h1>)
     },
     {
         name:'post',

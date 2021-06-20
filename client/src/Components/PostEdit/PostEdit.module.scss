@@ -1,0 +1,90 @@
+
+
+.container{
+    width:100vw;
+    z-index: 9999;
+    position: fixed;
+    top:0;
+    left:0;
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.507);
+    height:100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+.overlay{
+    width:100%;
+    height:100%;
+    position: absolute;
+    
+}
+.editor{
+    padding:15px;
+    border-radius: 6px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background-color: white;
+    max-width:600px;
+    position: relative;
+    width: 100%;
+    height:500px;
+   display: flex;
+   flex-direction: column;
+      
+   // border:1px solid rgba(75, 61, 61, 0.651);
+       
+        
+    
+}
+.editorWrapper{
+    width:95%;
+    margin:15px auto;
+    height: 100%;
+    position: relative;
+    border:1px solid gray;
+    
+    textarea{
+        width:100%;
+        padding:3px;
+       
+        resize:none;
+        border:none;
+        outline: none;
+        height: 100%;
+        font-size: 22px;
+       
+    }
+}
+.fileViewerWrapper{
+    width:95%;
+    margin:15px auto;
+    height: 100%;
+    position: relative;
+    border:1px dashed gray;
+    display: grid;
+    --width:33%;
+    grid-template-columns: repeat(3,var(--width));
+    grid-template-rows: repeat(9999,var(--width));
+    grid-gap: 3px;
+    overflow: auto;
+    overflow-x: hidden;
+    img{
+        width:100%;
+        height:auto;
+        border:1px solid black;
+    }
+}
+.groupButton{
+    display: grid;
+    grid-template-columns: max-content  max-content 1fr max-content;
+    grid-gap: 10px;
+}
+.hiddenInput{
+    overflow: hidden;
+    position: absolute;
+    visibility: hidden;
+    width:0;
+    height:0;
+    opacity: 0;
+}

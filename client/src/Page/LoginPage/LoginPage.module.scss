@@ -1,0 +1,88 @@
+$text-color: rgba(128, 128, 128, 0.623);
+.container {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.Form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  padding: 40px 15px;
+  margin: 0 auto;
+  box-shadow: rgba(100, 100, 111, 0.192) 0px 4px 14px 0px;
+  border-radius: 4px;
+  input {
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  p {
+    text-align: center;
+    color: $text-color;
+  }
+  button {
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 10px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 2px 24px;
+
+    &:hover {
+      box-shadow: rgba(100, 100, 111, 0.192) 0px 4px 14px 0px;
+    }
+  }
+}
+.MainForm {
+  display: flex;
+  padding: 0 15px;
+  flex-direction: column;
+  button {
+    width: 50%;
+    margin: 10px auto;
+    background: linear-gradient(to right, #680cd4, #d40c9a);
+    color: white;
+  }
+  input {
+    height: 40px;
+    margin-bottom: 5px;
+    padding: 0 10px;
+    border-radius: 4px;
+
+    color: $text-color;
+    background-color: rgba(196, 194, 194, 0.397);
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    &:focus {
+      border: 1px solid rgba(0, 0, 255, 0.562);
+    }
+  }
+}
+.Suggest {
+  margin: 0 auto;
+  span {
+    color: $text-color;
+  }
+  @media screen and (max-width: 700px) {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+}
+.groupForm {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-end;
+  label {
+    margin-right: 15px;
+    color: $text-color;
+    text-align: left;
+    width: 40%;
+  }
+  input {
+    width: 60%;
+  }
+}

@@ -16,3 +16,35 @@
     --nav-height:60px;
 
 }
+.facebook-login-icon{
+    display: inline-block;
+    background-color: #0078FF;
+    color:white;
+}
+
+
+.button{
+    border:none;
+    border-radius: 4px;
+    padding:9px 15px;
+    font-weight: bold;
+    transition: all .2s;
+    white-space: nowrap;
+    cursor: pointer;
+    min-width: 60px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 1px 14px;
+  
+   
+}
+@media screen and (hover:hover){
+    .button:hover{
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 14px;
+        
+    }
+   }
+.button:focus{
+    outline: none;
+}
+.bg-pink{
+    background-color: var(--light-button);
+}

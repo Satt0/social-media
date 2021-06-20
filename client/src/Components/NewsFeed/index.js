@@ -1,9 +1,9 @@
 import React from 'react'
 import Post from 'src/Components/Post'
-export default function NewsFeed() {
+export default function NewsFeed({posts}) {
     return (
         <div>
-            <Post/>
+           {posts.map((data,index)=><Post key={'post-id-'+index} data={data}/>)}
             
         </div>
     )
