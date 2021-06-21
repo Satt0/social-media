@@ -7,7 +7,6 @@ import { Provider } from "react-redux";
 import { useLogin } from "src/lib/hooks/useLogin";
 import store from "src/ReduxStore/store";
 import "src/stylesheets/css/global.css";
-import PostEdit from "./Components/PostEdit";
 
 const Loader = () => {
   const isLoggedIn = useLogin();

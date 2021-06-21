@@ -33,7 +33,8 @@ const getEarlierPostById=async(previousId)=>{
             const response=await db.query(`
                 select * from post
                 where postid < $1
-                order by postid desc;
+                order by postid desc 
+                limit 10;
             `,[previousId])
             return {rows:response.rows,count:response.rowCount}
     }
@@ -45,7 +46,8 @@ const getEarlierPostById=async(previousId)=>{
 const getUserPostById=async(uid)=>{
     try{
             const response=await db.query(`select * from post where userid=$1
-                    order by postid desc limit 10;
+                    order by postid desc 
+                    limit 10;
                 `,[uid])
             return {rows:response.rows,count:response.rowCount}
     }
@@ -53,9 +55,24 @@ const getUserPostById=async(uid)=>{
         throw e
     }
 }
+const getUserEARLIERPostById=async(previousId,uid)=>{
+    try{
+        const response=await db.query(`
+            select * from post
+            where postid < $1 and userid=$2
+            order by postid desc limit 10;
+        `,[previousId,uid])
+        return {rows:response.rows,count:response.rowCount}
+}
+catch(e){
+    throw e
+}
+
+}
 module.exports={
     insertPost,
     getLatestPosts,
     getEarlierPostById,
-    getUserPostById
+    getUserPostById,
+    getUserEARLIERPostById
 }

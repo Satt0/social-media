@@ -9,9 +9,10 @@ import { useSelector } from 'react-redux'
 export default function CheckIn({appendPost}) {
     const [openEditor,setOpenEditor]=useState(false)
     const userImage=useSelector(state => state.user.profileImage)
+    const onClose=React.useCallback(()=>{setOpenEditor(false)},[])
     return (
         <div className={styles.container}>
-                {openEditor&&<PostEdit appendPost={appendPost} onClose={()=>{setOpenEditor(false)}}/>}
+                {openEditor&&<PostEdit appendPost={appendPost} onClose={onClose}/>}
                 <div className={styles.CheckInItem}>
                 <Avatar size="large" userAvatar={userImage??null}/>
                 </div>

@@ -30,7 +30,7 @@ app.use(session({
 }))
 
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use('/public',express.static(path.join(__dirname, "public")));
 app.get('/cookies',(req,res)=>{
  if(req.session.user){
    res.send(req.session.user)
@@ -47,6 +47,11 @@ app.use("/api/post", postRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
+// app.use(express.static('client'))
+// app.get('/*',(req,res,next)=>{
+//   res.sendFile(path.join(__dirname,'client/index.html'))
+// })
+
 
 // error handler
 app.use(function (err, req, res, next) {

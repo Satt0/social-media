@@ -23,19 +23,11 @@ export default function UserPage(props) {
         
         
     },[props.match.params.uid])
-    useEffect(()=>{
-        if(user?.uid){
-            API.getAllPostById(user.uid).then(res=>{
-                if(res.count>0){
-                    setPosts(res.rows)
-                }
-            }) 
-        }
-    },[user])
-    const appendPost = (post) => {
+ 
+    const appendPost = React.useCallback((post) => {
         setPosts((state) => [post, ...state]);
-      };
-    if(user){
+      },[])
+    if(user?.uid>=0){
         return (
             <div className={styles.pageWrapper}>
                 <UserWall  user={user}/>
@@ -44,7 +36,7 @@ export default function UserPage(props) {
                <div className={styles.CheckInWrapper}> <CheckIn appendPost={appendPost}/></div>
               }
                <div className={styles.NewsFeedWrapper}>
-               <NewsFeed posts={posts}/>
+               <NewsFeed posts={posts} uid={user.uid} byUID={true} setPosts={setPosts}/>
                </div>
             </div>
         )

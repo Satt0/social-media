@@ -1,10 +1,9 @@
-import React, { useRef ,useState,useEffect} from "react";
+import React, { useRef ,useState,useEffect,useCallback} from "react";
 import styles from "./PostEdit.module.scss";
 import { useMedia } from "src/lib/hooks/useMedia";
 import {Badge} from '@material-ui/core'
 import API from 'src/lib/API/UserAPI'
 import {useSelector} from 'react-redux'
-import Post from "../Post";
 function MyEditor({value,setValue}) {
   
   return (
@@ -19,11 +18,11 @@ function MyEditor({value,setValue}) {
   );
 }
 function MyFileViewer({files,handleFiles}) {
-    const deleteFile=(index)=>{
-        return ()=>{
-            handleFiles(state=>state.filter((file,i)=>index!==i))
-        }
-    }
+    const deleteFile=useCallback((index)=>{
+      return ()=>{
+          handleFiles(state=>state.filter((file,i)=>index!==i))
+      }
+  },[handleFiles])
   return <div className={styles.fileViewerWrapper}>
       {files.map((file,index)=><ImageReview onDelete={deleteFile(index)} index={index+1} file={file}/>)}
   </div>;
@@ -64,37 +63,55 @@ export default function PostEdit({ onClose,appendPost }) {
   const fileRef = useRef(null);
   const [files,appendFile,handleFiles] = useMedia();
   const [viewFile,setViewFile]=useState(false)
+  
   const postButton = { display: "flex", justifyContent: "flex-end" };
-  const triggerFileUploads = () => {
+  const [isLock,setLock]=useState(false);
+  const [status,setStatus]=useState({message:''})
+  const onChangeInput=useCallback((value)=>{
+    if(status.message){
+      setStatus({message:''})
+    }
+    setEditorState(value)
+  },[setStatus,setEditorState,status.message])
+  const triggerFileUploads = useCallback(() => {
     fileRef.current.click();
-  };
-  const closeEditor = (e) => {
+  },[fileRef])
+  const closeEditor = useCallback((e) => {
     onClose();
-  };
-  const onPost=()=>{
-     if(uid && editorState.trim().length){
-      var data = new FormData()
-      data.append('content', editorState)
-      data.append('count', files.length)
-      data.append('uid', uid)
-      files.forEach((file,index)=>{
-          data.append(`uploads`,file)
-      })
-      
-      
-      API.makePost(data).then(res=>{
-          if(res.postid){
-
-            appendPost(res)
-
-            onClose()
-          }
-      })
-     }else{
-       alert("check your post again!")
-     }
+  },[onClose])
+  const onPost=useCallback(()=>{
      
-  }
+    setLock(true)
+    setStatus({message:"posting!"})
+ },[])
+  useEffect(()=>{
+    if(isLock===true){
+      if(uid && editorState.trim().length){
+        var data = new FormData()
+        data.append('content', editorState)
+        data.append('count', files.length)
+        data.append('uid', uid)
+        files.forEach((file,index)=>{
+            data.append(`uploads`,file)
+        })
+        
+        
+        API.makePost(data).then(res=>{
+            if(res.postid){
+  
+              appendPost(res)
+              setStatus({message:"success!"})
+              onClose()
+            }
+        })
+       }else{
+        setStatus({message:"no empty post!"})
+        setLock(false)
+       }
+    }
+  },[isLock,uid,editorState,files,appendPost,onClose])
+
+
   return (
     <div className={styles.container}>
       {/* files input hidden */}
@@ -119,10 +136,10 @@ export default function PostEdit({ onClose,appendPost }) {
       {/* text editor */}
       <div className={styles.editor}>
         <div className={styles.userProfile}>
-          <p>{!viewFile?'Write post':"Edit file ("+files.length+")"}</p>
+          <p>{!viewFile?'Write post':"Edit file ("+files.length+")"} <strong>{status.message}</strong></p>
         </div>
 
-        {viewFile?<MyFileViewer files={files} handleFiles={handleFiles}/>:<MyEditor value={editorState} setValue={setEditorState}/>}
+        {viewFile?<MyFileViewer files={files} handleFiles={handleFiles}/>:<MyEditor value={editorState} setValue={onChangeInput}/>}
 
         <div className={styles.groupButton}>
           <button className="button" onClick={triggerFileUploads}>
@@ -132,7 +149,7 @@ export default function PostEdit({ onClose,appendPost }) {
           <button className="button" onClick={()=>{setViewFile(s=>!s)}}>view {viewFile?'post':'media'}</button>
 </Badge>
           <div style={postButton}>
-            <button className="button bg-pink" onClick={onPost}>post</button>
+            <button disabled={isLock} className="button bg-pink" onClick={onPost}>post</button>
           </div>
           <button className="button" onClick={closeEditor}>
             cancel

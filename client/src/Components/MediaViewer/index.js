@@ -26,7 +26,7 @@ export default function MediaViewer({ media }) {
   );
 }
 const Image = ({ image }) => {
-  return <img className={styles.Image} src={getImageURL(image)} />;
+  return <img alt="user post" className={styles.Image} src={getImageURL(image)} />;
 };
 
 const Video = ({ video }) => {

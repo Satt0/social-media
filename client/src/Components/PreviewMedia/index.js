@@ -1,5 +1,4 @@
 import React from 'react'
-import VideoThumbnail from 'react-video-thumbnail'; // use npm published version
 import { getImageURL } from 'src/lib/Ultilities/getURL';
 import styles from './Preview.module.scss'
 export default function PreviewMedia({media,onOpen}) {

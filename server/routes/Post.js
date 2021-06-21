@@ -14,6 +14,7 @@ const {
   getLatestPostsHandler,
   getEarlierPostHandler,
   getUserPostByIdHandler,
+  getUserEarlierPostByIdHandler
 } = require("../handlers/PostHandler");
 
 router.param("id", (req, res, next, id) => {
@@ -41,7 +42,17 @@ router.param('uid',(req,res,next,id)=>{
     next(new Error("invalid User ID!"))
   }
 })
+router.param("lastid",(req,res,next,id)=>{
+  if(id){
+    req.previousId=id
+    next()
+  }
+  else{
+    next(new Error("no postid"))
+  }
+})
 router.get("/latest", getLatestPostsHandler);
 router.get("/earlier/:id", getEarlierPostHandler);
-router.get('/allpost/:uid',getUserPostByIdHandler)
+router.get('/allpost/:uid',getUserPostByIdHandler);
+router.get('/earlier/:uid/:lastid',getUserEarlierPostByIdHandler)
 module.exports = router;

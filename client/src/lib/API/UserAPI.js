@@ -97,6 +97,15 @@ async getEarlierPostByLastId(lastId){
     {
       return {err:e.message}
     }
+  },
+  async getUserEarlierPostById(uid,lastId){
+    try{
+      const response=await fetch(`${url.dev}/post/earlier/${uid}/${lastId}`).then(res=>res.json())
+      return response
+    }
+    catch(e){
+      return {err:e.message}
+    }
   }
 };
 
