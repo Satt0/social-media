@@ -1,0 +1,50 @@
+
+
+.container{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    overflow: hidden;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.589);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.postWrapper{
+    max-width: calc(var(--app-max-width) + 200px);
+    width: 100%;
+   display: grid;
+   z-index: 600;
+   position: relative;
+   overflow: hidden;
+   grid-template-rows: 700px;
+   
+}
+.hasMedia{
+    grid-template-columns: 1fr (400px);
+
+
+
+}
+.noMedia{
+    max-width:600px;
+    grid-template-columns: 1fr;
+    grid-template-rows: max-content;
+
+}
+.overlay{
+    position: fixed;
+    z-index: 500;
+    width:100vw;
+    height:100vh;
+    top:0;
+    left:0
+}
+.mediaViewer{
+    width:100%;
+    
+    
+}

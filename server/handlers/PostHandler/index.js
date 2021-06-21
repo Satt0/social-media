@@ -1,4 +1,4 @@
-const { insertPost ,getLatestPosts,getEarlierPostById} = require("../../database/queries/PostQueries");
+const { insertPost ,getLatestPosts,getEarlierPostById,getUserPostById} = require("../../database/queries/PostQueries");
 
 const makePostHandler = async(req, res, next) => {
   try {
@@ -37,8 +37,16 @@ const getEarlierPostHandler=async(req,res,next)=>{
     next(e)
   }
 }
+const getUserPostByIdHandler=async(req,res,next)=>{
+  try{
+          res.json(await getUserPostById(req.userId))
+  }catch(e){
+    next(e)
+  }
+}
 module.exports = {
   makePostHandler,
   getLatestPostsHandler,
-  getEarlierPostHandler
+  getEarlierPostHandler,
+  getUserPostByIdHandler
 };

@@ -12,4 +12,16 @@ const savefile = (req, res, next) => {
     next(e);
   }
 };
-module.exports = { savefile };
+const saveAvatar=(req,res,next)=>{
+  try{
+      const file=req.file
+      
+      req.newAvatar={path:file.path,type:file.minetype}
+      next()
+      return;
+  }
+  catch(e){
+    next(e)
+  }
+}
+module.exports = { savefile ,saveAvatar};

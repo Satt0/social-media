@@ -1,5 +1,6 @@
 const db = require("../driver");
-
+const fs=require('fs')
+const getDir=require('path')
 const registerUser = async (user) => {
   try {
     const {
@@ -8,7 +9,7 @@ const registerUser = async (user) => {
       userDisplayName,
       userFullName,
       dateOfBirth,
-      dateCreatedAccount=getDateNowISO(),
+      dateCreatedAccount = getDateNowISO(),
       email,
       phone,
       gender,
@@ -52,14 +53,14 @@ const LoginUser = async (user) => {
       );
       const data = response.rows[0];
       return {
-        status:true,
-        user:{
+        status: true,
+        user: {
           uid: data.userid,
           userFullName: data.userfullname,
           userDisplayName: data.userdisplayname,
           picture: data.picture,
           gender: data.gender,
-        }
+        },
       };
     }
     throw new Error("can't get user");
@@ -76,13 +77,15 @@ const registerByFacebook = async (user) => {
       userDisplayName = name,
       password = Date.now(),
       dateOfBirth = "1970-01-01",
-      dateCreatedAccount = getDateNowISO()
+      dateCreatedAccount = getDateNowISO();
 
-
-      // check if user exists
-    const existUser=await db.query(`select * from useraccount where facebookid=$1;`,[facebookid])
-    if (existUser.rowCount){
-      return getJSON(existUser.rows[0])
+    // check if user exists
+    const existUser = await db.query(
+      `select * from useraccount where facebookid=$1;`,
+      [facebookid]
+    );
+    if (existUser.rowCount) {
+      return getJSON(existUser.rows[0]);
     }
     // if not exist then insert
     const response = await db.query(
@@ -99,44 +102,78 @@ const registerByFacebook = async (user) => {
         dateCreatedAccount,
         gender,
         facebookid,
-        picture
+        picture,
       ]
     );
-    return getJSON(response.rows[0])
+    return getJSON(response.rows[0]);
   } catch (e) {
     throw e;
   }
 };
 
-
-const getUserInformationById=async(userId)=>{
-  try{
-        const response=await db.query(`select userid as uid,userfullname,userdisplayname,picture from useraccount 
-        where userid=$1;`,[userId])
-        return {rows:response.rows,count:response.rowCount}
-
-  }catch(e){
-    throw e
+const getUserInformationById = async (userId) => {
+  try {
+    const response = await db.query(
+      `select userid as uid,userfullname,userdisplayname,picture from useraccount 
+        where userid=$1;`,
+      [userId]
+    );
+    return { rows: response.rows, count: response.rowCount };
+  } catch (e) {
+    throw e;
   }
-}
+};
 
-function getJSON(raw){
- try{
-  return {
-    status:true,
-    user:{
-      uid:raw.userid,
-      userFullName:raw.userfullname,
-      picture:raw.picture,
-  
+const setUserAvatar = async (uid, path) => {
+  try {
+    const exist = await db.query(
+      `select picture from useraccount where userid=$1;`,
+      [uid]
+    );
+    if (exist.rowCount > 0) {
+      const old=(exist.rows[0].picture)
+      fs.rm(getDir.join(__dirname,'../../')+old,()=>{
+        console.log();
+        console.log('deleted ../../'+old);
+      })
     }
+    const newAvatar = await db.query(
+      `
+            update useraccount
+            set picture=$1
+            where userid=$2
+            returning picture;
+          `,
+      [path.path, uid]
+    );
+    return { rows: newAvatar.rows, count: newAvatar.rowCount,exist:exist.rowCount };
+  } catch (e) {
+    throw e;
   }
- }
- catch(e){
-   throw e
- }
+};
+
+// helpers
+function getJSON(raw) {
+  try {
+    return {
+      status: true,
+      user: {
+        uid: raw.userid,
+        userFullName: raw.userfullname,
+        picture: raw.picture,
+      },
+    };
+  } catch (e) {
+    throw e;
+  }
 }
-function getDateNowISO(){
+function getDateNowISO() {
   return new Date().toISOString().substring(0, 10);
 }
-module.exports = { registerUser, LoginUser,registerByFacebook,getUserInformationById };
+module.exports = {
+  registerUser,
+  LoginUser,
+  registerByFacebook,
+  getUserInformationById,
+  setUserAvatar,
+};

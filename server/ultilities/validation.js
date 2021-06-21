@@ -73,7 +73,9 @@ const validFacebookUserLogin = (req, res, next) => {
     next(e);
   }
 };
-
+const validUserEntity=(req,res,next)=>{
+  
+}
 
 
 

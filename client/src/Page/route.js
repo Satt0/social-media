@@ -1,7 +1,7 @@
 
 
 
-
+import UserPage from './UserPage'
 import HomePage from "./HomePage"
 const routes= [
     {
@@ -11,8 +11,8 @@ const routes= [
     },
     {
         name:'user',
-        path:'/user',
-        Component:()=>(<h1>user</h1>)
+        path:'/user/:uid',
+        Component:UserPage
     },
     {
         name:'post',

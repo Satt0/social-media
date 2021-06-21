@@ -1,0 +1,50 @@
+
+
+.container{
+    z-index: 1;
+    height:300px;
+    @media screen and(max-width:900px){
+            height: 250px;
+    }
+    @media screen and(max-width:600px){
+        height: 200px;
+}
+    position: relative;
+   
+}
+.background{
+    background-image: url('./default.jpg');
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    z-index: -1;
+    top:0;
+    left:0;
+    height:100%;
+    width:100%;
+}
+.userInfor{
+    z-index: 2;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.466);
+    backdrop-filter: blur(14px);
+    position: absolute;
+    bottom:0;
+    left:0;
+    display: flex;
+    justify-content: center;
+    p{
+        margin-top: 4px;
+        font-size: 1.2rem;
+    }
+    
+}
+
+.group{
+    display: inline-flex;
+    justify-content: center;
+    transform: translateY(-20px);
+    align-items: center;
+    flex-direction: column;
+    
+}

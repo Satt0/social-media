@@ -1,13 +1,14 @@
-import React from 'react'
+import React,{useState} from 'react'
 import styles from './Post.module.scss'
 import Avatar from '../Avatar'
 import like from 'src/stylesheets/svg/reaction.svg'
-import avatar from 'src/Components/Avatar/avatar.jpg'
 import { getImageURL } from 'src/lib/Ultilities/getURL'
 import API from 'src/lib/API/UserAPI'
-export default function Post({data}) {
+import { Link } from 'react-router-dom'
+import PreviewMedia from '../PreviewMedia'
+export default function Post({data,onOpen,type="minimal"}) {
+    const [seemore,setSeemore]=useState(false)
     const [post,setPost]=React.useState(null)
-    
     React.useEffect(()=>{
         if(data){
             setPost(state=>({...state,...data,media:JSON.parse(data.media)}))
@@ -15,9 +16,10 @@ export default function Post({data}) {
     },[data])
     React.useEffect(()=>{
         
-            if(post?.userid){
+            if(post?.userid && !post?.userfullname){
                 API.getUserById(post.userid).then(res=>{
                     setPost(state=>({...state,...res.rows[0]}))
+                    console.log(res);
                 })
             }
         
@@ -25,21 +27,31 @@ export default function Post({data}) {
     if(post){
         
         return (
+            <>
+           
+           
+                    
             <div className={styles.container} tabIndex="1">
                    {/* user infor */}
+                   
                    <div className={styles.userInfor}>
-                       <Avatar userAvatar={avatar} size="medium"/>
+                   <Link to={`/user/${post?.userid}`}>
+                       <Avatar userAvatar={post.picture??null} size="medium"/>
+                       </Link>
                        {/* user name and date created */}
                        <div className={styles.postInfor}>
+                       <Link to={`/user/${post?.userid}`}>
                             <p>{post?.userfullname || ""}</p>
+                            </Link>
                             <p>{data.datecreated}</p>
                        </div>
                        </div> 
+                   
     
                        {/* post */}
-                       <div className={styles.postContent}>
-                        <p>{data.content}</p>
-                        {post?.media?.length?<div className={styles.postMedia} style={{backgroundImage:`url("${getImageURL(post.media[0])}")`}}></div>:<></>}
+                       <div  title="click to open post"className={styles.postContent}>
+                        <p>{!seemore?data.content.substring(0,200):data.content}<span  style={{color:'gray',display:data.content.length<200 || seemore?"none":""}} onClick={()=>{setSeemore(true)}}>...see more</span></p> 
+                        {post?.media?.length&&type==="minimal"?<PreviewMedia onOpen={onOpen} media={post.media}/>:<></>}
                        </div>
                        {/* likes and comments */}
                        <div className={styles.like_comment}>
@@ -49,6 +61,10 @@ export default function Post({data}) {
     
                        </div>
             </div>
+           
+           
+           
+            </>
         )
     }
     return <></>

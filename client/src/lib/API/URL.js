@@ -1,6 +1,7 @@
 
-
+const dev='http://localhost:4000'
 const url={
-    dev:'http://localhost:4000'
+    dev:'/api',
+    img:'',
 }
 export default url

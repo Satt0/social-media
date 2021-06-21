@@ -49,7 +49,7 @@ const API = {
   async makePost(form){
    const data=await axios({
       method: "post",
-      url: "http://localhost:4000/post/newpost",
+      url: `${url.dev}/post/newpost`,
       data: form,
       headers: { "Content-Type": "multipart/form-data" },
     })
@@ -78,6 +78,25 @@ const API = {
       }catch(e){
         return {err:e.message}
       }
+  },
+async getEarlierPostByLastId(lastId){
+
+  try{
+        const response=await fetch(`${url.dev}/post/earlier/${lastId}`).then(res=>res.json())
+        return response
+  }catch(e){
+    return {err:e.message}
+  }
+}
+  ,
+  async getAllPostById(uid){
+    try{
+          const response=await fetch(`${url.dev}/post/allpost/${uid}`).then(res=>res.json())
+          return response
+        }catch(e)
+    {
+      return {err:e.message}
+    }
   }
 };
 

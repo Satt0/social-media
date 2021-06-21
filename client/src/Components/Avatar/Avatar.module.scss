@@ -3,12 +3,10 @@
     overflow: hidden;
     display: inline-block;
     
-    img{
-        width: 100%;
-        width:100%;
-        border-radius: 100%;
-        
-    }
+    background-position: center;
+
+    border-radius: 100%;
+    background-size: cover;
 }
 .small{
     @extend %image-small;

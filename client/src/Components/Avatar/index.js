@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './Avatar.module.scss'
 import noAvatar from './avatar.jpg'
-export default function Avatar({userAvatar,size="small"}) {
+import { getAvatarImage } from 'src/lib/Ultilities/getURL'
+export default function Avatar({userAvatar,size="small",from}) {
     let imgSize
     switch (size) {
         case "small":imgSize=styles.small
@@ -18,8 +19,8 @@ export default function Avatar({userAvatar,size="small"}) {
             break;
     }
     return (
-        <div className={`${styles.avatar} ${imgSize}`} >
-            <img alt="user avatar"  src={userAvatar??noAvatar}/>
+        <div style={{backgroundImage:`url("${getAvatarImage(userAvatar)??noAvatar}")`}} className={`${styles.avatar} ${imgSize}`} >
+            
         </div>
     )
 }

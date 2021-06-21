@@ -1,4 +1,4 @@
-const {getUserInformationById} = require('../../database/queries/UserQueries')
+const {getUserInformationById,setUserAvatar} = require('../../database/queries/UserQueries')
 
 const getUserInformationByIdHandler=async(req,res,next)=>{
     try{
@@ -10,8 +10,19 @@ const getUserInformationByIdHandler=async(req,res,next)=>{
     }
 }
 
-
+const setUserNewAvatarHandler=async (req,res,next)=>{
+    try{
+            const newAvatar=req.newAvatar
+            const uid=req.userId
+            
+             return res.json(await setUserAvatar(uid,newAvatar))
+    }
+    catch(e){
+        next(e)
+    }
+}
 
 module.exports={
-    getUserInformationByIdHandler
+    getUserInformationByIdHandler,
+    setUserNewAvatarHandler
 }

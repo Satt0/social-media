@@ -8,7 +8,7 @@ function App() {
         {/* <ChatBubble/> */}
         <Switch>
 
-        {routes.map(({path,name,Component})=><Route key={name} exact path={path}> <Component/></Route>)}
+        {routes.map(({path,name,Component})=><Route key={name} children={(props)=>(<Component {...props} />)} exact path={path}/> )}
 
         </Switch>
     </Layout>

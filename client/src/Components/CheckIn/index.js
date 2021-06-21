@@ -5,15 +5,15 @@ import picture from 'src/stylesheets/svg/picture.svg'
 import video from 'src/stylesheets/svg/video.svg'
 import PostEdit from '../PostEdit'
 import checkin from 'src/stylesheets/svg/checkin.svg'
-
-export default function CheckIn() {
+import { useSelector } from 'react-redux'
+export default function CheckIn({appendPost}) {
     const [openEditor,setOpenEditor]=useState(false)
-    
+    const userImage=useSelector(state => state.user.profileImage)
     return (
         <div className={styles.container}>
-                {openEditor&&<PostEdit onClose={()=>{setOpenEditor(false)}}/>}
+                {openEditor&&<PostEdit appendPost={appendPost} onClose={()=>{setOpenEditor(false)}}/>}
                 <div className={styles.CheckInItem}>
-                <Avatar size="large"/>
+                <Avatar size="large" userAvatar={userImage??null}/>
                 </div>
                 <div className={styles.CheckInStatus}>
                 <div className={styles.CheckinForm}>

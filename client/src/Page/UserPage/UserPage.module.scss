@@ -1,0 +1,20 @@
+
+
+.pageWrapper{
+    max-width: calc(var(--app-max-width ) - 200px);
+    min-height: 100vh;
+    margin:0 auto;
+    background-color: rgba(175, 175, 175, 0.151);
+    z-index: 0;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.CheckInWrapper{
+    width:80%;
+    margin:0 auto;
+    position: relative;
+}
+.NewsFeedWrapper{
+    width:90%;
+    margin:0 auto;
+    margin-top: 20px;
+}

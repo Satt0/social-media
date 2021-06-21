@@ -4,6 +4,7 @@ import { useMedia } from "src/lib/hooks/useMedia";
 import {Badge} from '@material-ui/core'
 import API from 'src/lib/API/UserAPI'
 import {useSelector} from 'react-redux'
+import Post from "../Post";
 function MyEditor({value,setValue}) {
   
   return (
@@ -57,7 +58,7 @@ function ImageReview({file,index,onDelete}){
 
 
 
-export default function PostEdit({ onClose }) {
+export default function PostEdit({ onClose,appendPost }) {
     const [editorState, setEditorState] = React.useState("");
   const uid=useSelector(state=>state.user.uid)
   const fileRef = useRef(null);
@@ -82,7 +83,12 @@ export default function PostEdit({ onClose }) {
       
       
       API.makePost(data).then(res=>{
-          console.log(res);
+          if(res.postid){
+
+            appendPost(res)
+
+            onClose()
+          }
       })
      }else{
        alert("check your post again!")
@@ -98,7 +104,7 @@ export default function PostEdit({ onClose }) {
           ref={fileRef}
           type="file"
           multiple
-          accept="image/png, image/gif, image/jpeg"
+          accept="image/png, image/gif, image/jpeg, video/*"
         />
       </div>
       {/* overlay */}
