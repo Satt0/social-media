@@ -1,4 +1,6 @@
 node_modules/*
 !node_modules/my_module
 uploads/*
-public/images/*
+public/images/posts/*
+public/images/avatar/*
+client/*

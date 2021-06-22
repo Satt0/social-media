@@ -91,7 +91,7 @@ export default function PostEdit({ onClose,appendPost }) {
         data.append('content', editorState)
         data.append('count', files.length)
         data.append('uid', uid)
-        files.forEach((file,index)=>{
+        files.forEach((file)=>{
             data.append(`uploads`,file)
         })
         
@@ -103,8 +103,11 @@ export default function PostEdit({ onClose,appendPost }) {
               setStatus({message:"success!"})
               onClose()
             }
+        }).catch(e=>{
+          setStatus({message:"post failed!"})
         })
        }else{
+         
         setStatus({message:"no empty post!"})
         setLock(false)
        }
@@ -129,8 +132,10 @@ export default function PostEdit({ onClose,appendPost }) {
         title="close editor"
         className={styles.overlay}
         onClick={(e) => {
-          onClose();
-          e.stopPropagation();
+          if(!isLock){
+            onClose();
+          }
+          
         }}
       ></div>
       {/* text editor */}
@@ -142,7 +147,7 @@ export default function PostEdit({ onClose,appendPost }) {
         {viewFile?<MyFileViewer files={files} handleFiles={handleFiles}/>:<MyEditor value={editorState} setValue={onChangeInput}/>}
 
         <div className={styles.groupButton}>
-          <button className="button" onClick={triggerFileUploads}>
+          <button disabled={isLock} className="button" onClick={triggerFileUploads}>
             add media
           </button>
           <Badge invisible={viewFile} badgeContent={files.length || 0} color="secondary">
@@ -151,7 +156,7 @@ export default function PostEdit({ onClose,appendPost }) {
           <div style={postButton}>
             <button disabled={isLock} className="button bg-pink" onClick={onPost}>post</button>
           </div>
-          <button className="button" onClick={closeEditor}>
+          <button className="button" disabled={isLock} onClick={closeEditor}>
             cancel
           </button>
         </div>

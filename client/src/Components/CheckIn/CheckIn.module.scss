@@ -14,11 +14,15 @@ $mobile:550px;
     
 
     display: grid;
+    grid-template-rows: 1fr;
+
     grid-template-columns: max-content 1fr;
     @media screen and(max-width:$mobile) {
         grid-template-columns:1fr;
+        grid-template-rows:max-content 1fr;
+        height:230px;
+
     }
-    grid-template-rows: 1fr;
     
 
 }
@@ -31,8 +35,11 @@ $mobile:550px;
     padding: 15px;
     display: flex;
     align-items: center;
-    @media screen and(max-width:550px) {
-            display:none;
+    @media screen and(max-width:$mobile) {
+        justify-content: center;
+        padding:0;
+        padding-top: 10px;
+
     }
     
 }
@@ -44,17 +51,17 @@ $mobile:550px;
     
     button{
         border:none;
-        box-shadow: rgba(0, 0, 0, 0.411) 0px 1px 4px;
+        box-shadow: rgba(0, 0, 0, 0.11) 0px 1px 4px;
         font-size: 1.3rem;
         color:rgba(95, 95, 95, 0.678);
         height:70%;
         width:100%;
         cursor: text;
-        border-radius: 500px;
+        border-radius: 5px;
         transition: all .2s;
         background-color: rgba(128, 128, 128, 0.205);
         &:hover{
-            background-color: rgba(128, 128, 128, 0.644);
+            background-color: rgba(128, 128, 128, 0.288);
         }
     }
 }

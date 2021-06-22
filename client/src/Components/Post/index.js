@@ -5,9 +5,13 @@ import like from "src/stylesheets/svg/reaction.svg";
 import API from "src/lib/API/UserAPI";
 import { Link } from "react-router-dom";
 import PreviewMedia from "../PreviewMedia";
+import { useSelector } from "react-redux";
+import Comment from "../Comment";
 export default function Post({ data, onOpen, type = "minimal", propsStyle }) {
   const [seemore, setSeemore] = useState(false);
+  const localUser=useSelector(state=>state.user)
   const [post, setPost] = React.useState(null);
+  const [seeComment,setCommentView]=useState(false)
   React.useEffect(() => {
     if (data) {
       setPost((state) => ({
@@ -18,13 +22,25 @@ export default function Post({ data, onOpen, type = "minimal", propsStyle }) {
     }
   }, [data]);
   React.useEffect(() => {
-    if (post?.userid && !post?.userfullname) {
-      API.getUserById(post.userid).then((res) => {
-        setPost((state) => ({ ...state, ...res.rows[0] }));
-        
-      });
-    }
-  }, [post]);
+   
+      if(data.userid!==localUser.uid && !post){
+        API.getUserById(data.userid).then((res) => {
+          setPost((state) => ({ ...state, ...res.rows[0] }));
+          console.log('retrieving user data');
+        });
+      }
+      
+    
+  }, [data,localUser,post]);
+  React.useEffect(()=>{
+      if(data.userid===localUser.uid){
+        setPost(state=>({...state,picture:localUser.profileImage,userfullname:localUser.fullName}))
+
+      }
+  },[localUser,data])
+
+  
+
   if (post) {
     return (
       <>
@@ -55,6 +71,7 @@ export default function Post({ data, onOpen, type = "minimal", propsStyle }) {
                 }}
                 onClick={(e) => {
                   setSeemore((state) => !state);
+                  
                   if(seemore){
                     setTimeout(() => {
                         e.target.scrollIntoView({
@@ -79,8 +96,9 @@ export default function Post({ data, onOpen, type = "minimal", propsStyle }) {
           <div className={styles.like_comment}>
             <Avatar userAvatar={like} />
             <div></div>
-            <p>{data.commentcount} comments</p>
+            <p style={{cursor:'pointer'}} onClick={()=>{setCommentView(s=>!s)}}>comments</p>
           </div>
+          <Comment userId={data.userid} postID={data.postid} onOpen={seeComment} onClose={()=>{setCommentView(false)}} inMediaBrowser={type!=="minimal"}/>
         </div>
       </>
     );

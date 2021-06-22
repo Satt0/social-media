@@ -8,6 +8,7 @@ export default function NewsFeed({ posts, setPosts,byUID=false,uid }) {
   const [open, setOpen] = useState(false);
   const [currentPost, setCurrent] = useState(null);
   const [hasMore,setHasMore]=useState(true)
+ 
   const onUpdate = () => {
     if (posts.length > 0) {
         const  lastId = posts[posts.length - 1].postid;
@@ -65,16 +66,17 @@ export default function NewsFeed({ posts, setPosts,byUID=false,uid }) {
       setCurrent(posts[index]);
     };
   };
-  if (posts?.length > 0) {
+  if (posts[0]) {
     return (
       <div>
-        <MediaBrowser
+        {currentPost&&<MediaBrowser
           open={open}
           post={currentPost}
+          
           onClose={() => {
             setOpen(false);
           }}
-        />
+        />}
         <InfiniteScroll
           dataLength={posts.length} //This is important field to render the next data
           next={onUpdate}

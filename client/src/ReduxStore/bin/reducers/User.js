@@ -14,6 +14,9 @@ const user=(state=defaultState,action)=>{
     }
     if ( action.type===Type.logOutUser){
         return {...defaultState}
+    } 
+    if (action.type===Type.changeAvatar){
+        return {...state,...action.payload}
     }
     return state
 }

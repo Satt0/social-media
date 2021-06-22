@@ -7,14 +7,16 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-const { validNewPost } = require("../ultilities/validation");
+const { validNewPost ,userCommentPostValidation} = require("../ultilities/validation");
 const { savefile } = require("../ultilities/savefile");
 const {
   makePostHandler,
   getLatestPostsHandler,
   getEarlierPostHandler,
   getUserPostByIdHandler,
-  getUserEarlierPostByIdHandler
+  getUserEarlierPostByIdHandler,
+  postUserCommentToPostHanlder,
+  getPostLatestCommentHandler
 } = require("../handlers/PostHandler");
 
 router.param("id", (req, res, next, id) => {
@@ -51,8 +53,23 @@ router.param("lastid",(req,res,next,id)=>{
     next(new Error("no postid"))
   }
 })
+router.param('postid',(req,res,next,id)=>{
+  try{
+    if(id.trim().length){
+      req.postid=id
+      next()
+      return
+    }
+    throw new Error("no postid")
+  }catch(e){
+    next(e)
+  }
+})
 router.get("/latest", getLatestPostsHandler);
 router.get("/earlier/:id", getEarlierPostHandler);
 router.get('/allpost/:uid',getUserPostByIdHandler);
 router.get('/earlier/:uid/:lastid',getUserEarlierPostByIdHandler)
+
+router.post('/comment',userCommentPostValidation,postUserCommentToPostHanlder)
+router.get('/comment/:postid',getPostLatestCommentHandler)
 module.exports = router;

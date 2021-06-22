@@ -14,6 +14,7 @@ export default function UserPage(props) {
         API.getUserById(uid).then(res=>{
             if(res.count>=1 && !res.err){
                 setUser(res.rows[0])
+                
             }
             })
 
@@ -30,7 +31,7 @@ export default function UserPage(props) {
     if(user?.uid>=0){
         return (
             <div className={styles.pageWrapper}>
-                <UserWall  user={user}/>
+                <UserWall  isLocal={isUserID===user.uid} user={user}/>
               {user.uid===isUserID&&
               
                <div className={styles.CheckInWrapper}> <CheckIn appendPost={appendPost}/></div>

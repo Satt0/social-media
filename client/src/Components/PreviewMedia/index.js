@@ -1,7 +1,7 @@
 import React from 'react'
 import { getImageURL } from 'src/lib/Ultilities/getURL';
 import styles from './Preview.module.scss'
-export default function PreviewMedia({media,onOpen}) {
+export default function PreviewMedia({media,onOpen,handleOpen}) {
     return (
         <div onClick={onOpen} className={`${styles.container} ${media.length===1?styles.single:styles.many}`}>
             <GetElement media={media[0]}/>

@@ -15,7 +15,7 @@ const savefile = (req, res, next) => {
 const saveAvatar=(req,res,next)=>{
   try{
       const file=req.file
-      
+      console.log(file);
       req.newAvatar={path:file.path,type:file.minetype}
       next()
       return;

@@ -69,10 +69,41 @@ catch(e){
 }
 
 }
+
+const userCommentPost=async(comment)=>{
+    try{
+        const {userid,postid,content,datecreated=getDateNowISO()}=comment  
+        const response=await db.query(`insert into usercomment(postid,userid,datecreated,content)
+            values($1,$2,$3,$4) returning *;`,[postid,userid,datecreated,content]);
+            return {rows:response.rows,count:response.count} 
+                
+    } catch(e){
+        throw e
+    }
+}
+const getPostLatestCommentByIdLimit10=async(postid)=>{
+        try{
+                const response=await db.query(`select * from usercomment
+                    where postid=$1
+                        order by commentid desc
+                        limit 10
+                     ;`,[postid])
+                return {rows:response.rows,count:response.count}
+        }catch(e){
+            throw e
+        }
+}
+// helper
+
+function getDateNowISO() {
+    return new Date().toISOString().substring(0, 10);
+  }
 module.exports={
     insertPost,
     getLatestPosts,
     getEarlierPostById,
     getUserPostById,
-    getUserEARLIERPostById
+    getUserEARLIERPostById,
+    userCommentPost,
+    getPostLatestCommentByIdLimit10
 }

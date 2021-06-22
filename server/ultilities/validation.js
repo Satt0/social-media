@@ -99,12 +99,25 @@ const validNewPost=(req,res,next)=>{
     next(e)
   }
 }
-
+const userCommentPostValidation=(req,res,next)=>{
+    try{
+          const {postid,userid,content}=req.body.comment
+          if(postid && userid && content){
+            req.commentVerified=req.body.comment;
+            next()
+            return
+          }
+        next(new Error("missing comment body"))          
+    }catch(e){
+      next(e)
+    }
+}
 
 module.exports = {
   validUserRegister,
   validUserLogin,
   validFacebookUserRegister,
   validFacebookUserLogin,
-  validNewPost
+  validNewPost,
+  userCommentPostValidation
 };

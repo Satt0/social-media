@@ -47,10 +47,10 @@ app.use("/api/post", postRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
-// app.use(express.static('client'))
-// app.get('/*',(req,res,next)=>{
-//   res.sendFile(path.join(__dirname,'client/index.html'))
-// })
+app.use(express.static('client'))
+app.get('/*',(req,res,next)=>{
+  res.sendFile(path.join(__dirname,'client/index.html'))
+})
 
 
 // error handler
