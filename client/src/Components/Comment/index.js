@@ -21,6 +21,7 @@ function isElementInViewport(el) {
 export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
   const [comment, setComment] = React.useState(null);
   const [isLoad, setIsLoaded] = React.useState(false);
+  const [lastTrackedComment,setLastTracked]=React.useState(0)
   const elRef = React.useRef(null);
   const userId = useSelector((state) => state.user.uid);
   React.useEffect(() => {
@@ -34,9 +35,22 @@ export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
         comment: { content: comment, userid: userId, postid: postID },
       };
       const data = await API.userCommentPost(newComment).then((res) => {
-        if (res?.rows[0]) {
-          setComment((state) => [res.rows[0], ...state]);
+        const update={
+          update:{
+            lastid:lastTrackedComment,
+            postid:postID
+          }
         }
+        API.updateCommentByLastID(update).then(res=>{
+          if(!res.err)
+          {
+            if(res?.rows?.length ){
+              setComment(state=>([...res.rows,...state]))
+              setLastTracked(res.rows[0].commentid)
+            }
+          }
+        })
+
         return true;
       });
       return data;
@@ -44,8 +58,11 @@ export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
   };
   React.useEffect(() => {
     if (isLoad) {
+      
       API.getPostLatestComment(postID).then((res) => {
-        setComment(res.rows);
+        if(!res.err){
+          setComment(res.rows);
+        }
       });
     }
   }, [isLoad, postID]);
@@ -55,19 +72,49 @@ export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
     if (isLoad && onOpen && postID) {
       a = setInterval(() => {
         if (isElementInViewport(elRef.current)) {
-          console.log(isElementInViewport(elRef.current));
-          API.getPostLatestComment(postID).then((res) => {
-            setComment((state) => {
-              try {
-                const newState = res.rows.filter(
-                  (e) => e.commentid > state[0].commentid
-                );
-                return [...newState, ...state];
-              } catch (e) {
-                return [...res.rows, ...state];
+          const update={
+            update:{
+              lastid:lastTrackedComment,
+              postid:postID
+            }
+          }
+          API.updateCommentByLastID(update).then(res=>{
+            if(!res.err){
+              if(res?.rows?.length){
+                setComment(state=>([...res.rows,...state]))
+                setLastTracked(res.rows[0].commentid)
+                console.log(res.rows[0].commentid);
               }
-            });
-          });
+            }
+          })
+
+
+
+          // API.getPostLatestComment(postID).then((res) => {
+          //   console.log("test");
+          //   setComment((state) => {
+
+          //     try {
+          //       const newState = res.rows.filter(
+          //         (e) => e.commentid > state[0].commentid
+          //       );
+                  
+          //       return [...newState, ...state];
+          //     } catch (e) {
+          //       if(res?.rows.length){
+          //         return [...res.rows, ...state];
+          //       }
+          //       return state
+          //     }
+
+
+
+          //   });
+          //  if(res?.rows[0]?.commentid){
+          //   setLastTracked(res.rows[0].commentid)
+          //   console.log(res.rows[0].commentid);
+          //  }
+          // });
         } else {
           return;
         }
@@ -76,7 +123,7 @@ export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
     return () => {
       clearInterval(a);
     };
-  }, [isLoad, onOpen, postID, comment]);
+  }, [isLoad, onOpen, postID, comment,lastTrackedComment]);
   const isMobile = useMediaQuery("(max-width:1000px)");
   if (comment) {
     return (

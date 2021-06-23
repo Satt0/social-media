@@ -5,7 +5,8 @@ const {
   getUserPostById,
   getUserEARLIERPostById,
   userCommentPost,
-  getPostLatestCommentByIdLimit10
+  getPostLatestCommentByIdLimit10,
+  updateUserCommentByLastTrackedID
 } = require("../../database/queries/PostQueries");
 
 const makePostHandler = async (req, res, next) => {
@@ -73,6 +74,15 @@ const getPostLatestCommentHandler=async(req,res,next)=>{
       next(e)
     }
   }
+const updateUserCommentBylastIDHandler=async(req,res,next)=>{
+  try{
+            const {lastid,postid}=req.verified
+            return res.status(200).json(await updateUserCommentByLastTrackedID(postid,lastid))
+  }
+  catch(e){
+    next(e)
+  }
+}
 module.exports = {
   makePostHandler,
   getLatestPostsHandler,
@@ -80,5 +90,6 @@ module.exports = {
   getUserPostByIdHandler,
   getUserEarlierPostByIdHandler,
   postUserCommentToPostHanlder,
-  getPostLatestCommentHandler
+  getPostLatestCommentHandler,
+  updateUserCommentBylastIDHandler
 };

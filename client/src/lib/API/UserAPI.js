@@ -151,6 +151,15 @@ const API = {
             err:'bad request'
           }
         }
+  },
+  async updateCommentByLastID(update){
+      try{  
+            const response=await fetch(`${url.dev}/post/comment/update`,getHeaders("POST",update)).then(res=>res.json())
+            return response
+      }
+      catch(e){
+        return {err:"not found"}
+      }
   }
 };
 

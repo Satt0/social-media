@@ -93,6 +93,23 @@ const getPostLatestCommentByIdLimit10=async(postid)=>{
             throw e
         }
 }
+const updateUserCommentByLastTrackedID=async(postid,lastTrackedID)=>{
+
+    try{
+            const response=await db.query(`select * from usercomment
+                    where postid=$1 and commentid > $2
+                    order by commentid desc
+                    limit 10;
+            `,[postid,lastTrackedID])
+            return {rows:response.rows,count:response.rowCount}
+
+    }
+    catch(e){
+        throw e
+    }
+}
+
+
 // helper
 
 function getDateNowISO() {
@@ -105,5 +122,6 @@ module.exports={
     getUserPostById,
     getUserEARLIERPostById,
     userCommentPost,
-    getPostLatestCommentByIdLimit10
+    getPostLatestCommentByIdLimit10,
+    updateUserCommentByLastTrackedID
 }

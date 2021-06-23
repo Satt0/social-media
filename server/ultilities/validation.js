@@ -1,3 +1,7 @@
+var validator = require('validator');
+
+
+
 const validUserRegister = (req, res, next) => {
   try {
     const {
@@ -85,7 +89,7 @@ const validNewPost=(req,res,next)=>{
   try{
     const {content,uid}=req.body
 
-    if(uid && content){
+    if(validator.isNumeric(uid+'') && !validator.isEmpty(content)){
       req.postVerified=req.body
       next()
       return
@@ -112,12 +116,26 @@ const userCommentPostValidation=(req,res,next)=>{
       next(e)
     }
 }
-
+const validUpdateCommentByLastTrackedID=(req,res,next)=>{
+  try{
+    const {lastid,postid}=req.body.update
+    if(validator.isNumeric(lastid+'') && validator.isNumeric(postid+'')){
+        req.verified=req.body.update
+        next()
+        return
+    }
+    throw new Error("bad input")
+  }
+  catch(e){
+    next(e)
+  }
+}
 module.exports = {
   validUserRegister,
   validUserLogin,
   validFacebookUserRegister,
   validFacebookUserLogin,
   validNewPost,
-  userCommentPostValidation
+  userCommentPostValidation,
+  validUpdateCommentByLastTrackedID
 };

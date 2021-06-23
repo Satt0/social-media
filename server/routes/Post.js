@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-const { validNewPost ,userCommentPostValidation} = require("../ultilities/validation");
+const { validNewPost ,userCommentPostValidation,validUpdateCommentByLastTrackedID} = require("../ultilities/validation");
 const { savefile } = require("../ultilities/savefile");
 const {
   makePostHandler,
@@ -16,7 +16,8 @@ const {
   getUserPostByIdHandler,
   getUserEarlierPostByIdHandler,
   postUserCommentToPostHanlder,
-  getPostLatestCommentHandler
+  getPostLatestCommentHandler,
+  updateUserCommentBylastIDHandler
 } = require("../handlers/PostHandler");
 
 router.param("id", (req, res, next, id) => {
@@ -72,4 +73,5 @@ router.get('/earlier/:uid/:lastid',getUserEarlierPostByIdHandler)
 
 router.post('/comment',userCommentPostValidation,postUserCommentToPostHanlder)
 router.get('/comment/:postid',getPostLatestCommentHandler)
+router.post('/comment/update',validUpdateCommentByLastTrackedID,updateUserCommentBylastIDHandler)
 module.exports = router;
