@@ -1,7 +1,7 @@
 
-const dev='http://192.168.1.8:4000'
+const dev=false?'http://192.168.1.48:4000':"/"
 const url={
-    dev:'/api',
-    img:'/',
+    dev:dev+'/api',
+    img:dev+'/',
 }
 export default url
