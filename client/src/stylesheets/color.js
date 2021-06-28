@@ -3,6 +3,13 @@ import bgRosie from './images/rose.jpg'
 import bgJennie from './images/jennie.jpg'
   
    const  theme={
+       default:{
+            text:'black',
+            backgroud:"white",
+            backgroudPost:'white',
+            backgroundImage:null
+
+       },
         rosie:{
             text:'var(--text-rosie)',
             background:'var(--background-rosie)',

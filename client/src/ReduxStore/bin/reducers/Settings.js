@@ -1,6 +1,6 @@
 
 const settings={
-    theme:'rosie'
+    theme:'default'
 }
 
 

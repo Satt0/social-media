@@ -6,7 +6,7 @@ import style from "./style.module.scss";
 import { useQuery } from "@apollo/client";
 import ChatBubble from "../ChatBubble";
 import { useSelector, useDispatch } from "react-redux";
-export default function ChatListener({ userid, icon }) {
+export default function ChatListener({ userid }) {
   const dispatch = useDispatch();
 
   const GlobalConversation = useSelector((state) => state.Message.Conversation);
@@ -26,10 +26,7 @@ export default function ChatListener({ userid, icon }) {
 
   return (
     <div style={{ position: "relative" }}>
-      <IconBadge icon={icon} />
-      {/* <div className={style.container}>
-            {conversation.map(e=><li key={"dropdown-"+e.conversationid}>{e.conversationid}</li>)}
-            </div> */}
+    
       {GlobalConversation && (
         <Listener
           conversation={GlobalConversation}
@@ -49,7 +46,8 @@ const Listener = ({ userid, conversation }) => {
   const dispatch = useDispatch();
   React.useEffect(() => {
     if (listener?.data) {
-      // onMessage(listener.data.waitAllMessage)
+      console.log(listener.data);
+
       const newMessage = listener.data.waitAllMessage;
       const { userid, receiver } = newMessage;
 

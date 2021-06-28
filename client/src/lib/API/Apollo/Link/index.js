@@ -1,13 +1,13 @@
 import { split, HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
-const host='192.168.1.8'
+const host=true?'192.168.1.8:4000':"localhost:4000"
 const httpLink = new HttpLink({
-  uri: `http://${host}:4000/graphql`
+  uri: `http://${host}/graphql`
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://${host}:4000/graphql`,
+  uri: `ws://${host}/graphql`,
   options: {
     reconnect: true
   }

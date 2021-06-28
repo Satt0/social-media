@@ -23,12 +23,14 @@ export default function Navbar({userid}) {
           <Link to="/">
             <Avatar userAvatar={logo} />
           </Link>
-          <SearchBox />
+          {/* <SearchBox /> */}
         </div>
 
         <div className={styles.groupNotification}  style={{display:'flex',alignItems:"center"}}>
-          {userid&&<ChatListener icon={message} userid={userid}/>}
-          <IconBadge icon={notification} />
+          {/* <IconBadge icon={notification} /> */}
+         <div style={{marginRight:8}}>
+         <IconBadge count={3} icon={message}/>
+         </div>
           {uid && (
             <Link to={`/user/${uid}`}>
               <Avatar userAvatar={profileImage}/>

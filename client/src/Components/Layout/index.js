@@ -2,8 +2,9 @@
 import React from 'react'
 import Navbar from 'src/Components/Navbar'
 import { useTheme } from 'src/lib/hooks/useColor'
-
+import message from 'src/stylesheets/svg/message.svg'
 import { useSelector } from 'react-redux'
+import ChatListener from '../ChatListener'
 export default function Layout({children}) {
     const userid=useSelector(state=>state.user.uid)
     const theme=useTheme()
@@ -18,6 +19,7 @@ export default function Layout({children}) {
     }
     return (
         <div style={style}>
+                      {userid&&<ChatListener  userid={userid}/>}
 
             <Navbar userid={userid}/>
             {children}
