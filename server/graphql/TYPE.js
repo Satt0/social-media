@@ -94,7 +94,7 @@ const typeDefs=gql`
     }
     type Subscription {
         getComment(postid:Int!):Comment!
-        waitMessageOneConversation(input:waitMessageInput):Message!
+        # waitMessageOneConversation(input:waitMessageInput):Message!
         waitAllMessage(userid:Int!):Message!
 
     }

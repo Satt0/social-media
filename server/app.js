@@ -47,10 +47,10 @@ app.use("/api/post", postRouter);
 // catch 404 and forward to error handler
 
 // for ssr react app
-// app.use(express.static('client'))
-// app.get('/*',(req,res,next)=>{
-//   res.sendFile(path.join(__dirname,'client/index.html'))
-// })
+app.use(express.static('client'))
+app.get('/*',(req,res,next)=>{
+  res.sendFile(path.join(__dirname,'client/index.html'))
+})
 
 // error handler
 
