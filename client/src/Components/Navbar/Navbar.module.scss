@@ -6,37 +6,35 @@
     position: sticky;
     z-index: 200;
     top:0;
-    background-color: white;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     transition: all .2s;
     *{
-        transition: inherit;
+        
+        color:inherit;
     }
 
 }
 .content{
     height:100%;
     padding:0 20px;
+    color:inherit;
     max-width: var(--app-max-width);
     margin:0 auto;
     display: grid;
     grid-template-columns: 1fr max-content;
     grid-template-rows: 1fr;
-    div{
-        display:flex;
-        align-items: center;
-    }
+    
 }
 .groupSearch{
     display: grid;
+    color:inherit;
     grid-gap: 11px;
 }
 
 
 .groupNotification{
-    div{
-        margin-left: 10px;
-    }
+    color:inherit;
+    
     img{
        @extend %image;
     }

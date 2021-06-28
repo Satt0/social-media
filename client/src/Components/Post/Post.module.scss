@@ -7,12 +7,11 @@
     @media screen and (max-width:700px){
         padding:6px;
     }
-    background-color: white;
   
     box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 8px;
     grid-template-columns: 1fr;
     
-    border-radius: 6px 6px 0 0;
+    border-radius: 4px;
     flex-direction: column;
     overflow-x:hidden;
     overflow-y: auto;
@@ -60,10 +59,15 @@
     grid-template-columns: max-content 1fr max-content;
     grid-template-rows: 1fr;
     margin-bottom: 15px;
+    padding:0 5px;
+    padding-top: 4px;
+    
+    cursor: pointer;
     border-top: 1px solid rgba(128, 128, 128, 0.336);
     p{
         align-items: center;
         display: flex;
     }
+   
 }
 

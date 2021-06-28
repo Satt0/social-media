@@ -1,4 +1,4 @@
-const router = require("express").Router({ mergeParams: true });
+var router = require("express-promise-router")();
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -39,4 +39,13 @@ router.post("/fblogin", validFacebookUserLogin, authFaceBookHandler);
 router.get('/information/:uid',getUserInformationByIdHandler)
 router.put('/avatar/:uid',upload.single('avatar'),saveAvatar,setUserNewAvatarHandler)
 
+
+router.get('/cookies',(req,res)=>{
+  if(req.session.user){
+    res.send(req.session.user)
+  }else{
+   req.session.user="tan"
+   res.send('inited')
+  }
+ })
 module.exports = router;

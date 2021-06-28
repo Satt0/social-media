@@ -7,12 +7,13 @@ import search from 'src/stylesheets/svg/search.svg'
 // material ui
 import {Drawer} from '@material-ui/core'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
+import { useTheme } from 'src/lib/hooks/useColor'
 
 const SearchBox=()=>{
     const isMobile=useMediaQuery("(max-width:700px)")
     const [isShown,setState]=useState(true)
     const [searchDrawer,setSearchDrawer]=useState(false)
+    const theme=useTheme()
     return (<>
     <OverlaySearch isOpen={searchDrawer} setOpen={setSearchDrawer}/>
     <form className={styles.searchBox} style={{backgroundColor:isMobile?"transparent":''}}>
@@ -25,7 +26,7 @@ const SearchBox=()=>{
         }}
         
         alt="icon" title="Search" width={isMobile?"32":'23'} src={search}/></div>
-    <input placeholder="Search Anything!" style={{display:isMobile?'none':''}} onFocus={()=>{setState(false)}}  onBlur={()=>{setState(true)}} type="text"/>
+    <input style={{color:theme.text,display:isMobile?'none':''}} placeholder="Search Anything!" onFocus={()=>{setState(false)}}  onBlur={()=>{setState(true)}} type="text"/>
     </form>
     </>)
 }

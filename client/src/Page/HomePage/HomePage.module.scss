@@ -4,15 +4,25 @@
     max-width: calc(var(--app-max-width) - 300px);
     margin:0 auto;
     padding:0;
-    background-color: rgba(128, 128, 128, 0.11);
     min-height:100vh;
-    // border-left:1px solid rgba(128, 128, 128, 0.425);
-    // border-right:1px solid rgba(128, 128, 128, 0.425);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  
+    padding:15px;
+    padding-bottom: 5vh;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 2px 9px 0px;
 
     @media screen and (max-width:700px){
         padding:3px;
     }
     padding-top: 0;
+    animation:showup 1s backwards;
     
+}
+@keyframes showup{
+    from {
+        opacity: 0;
+    }
+    to{
+
+        opacity: 1;
+    }
 }

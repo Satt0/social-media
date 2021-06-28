@@ -1,5 +1,5 @@
-const router = require("express").Router({ mergeParams: true });
-
+var router = require("express-promise-router")();
+var validator = require('validator');
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -20,13 +20,14 @@ const {
   updateUserCommentBylastIDHandler
 } = require("../handlers/PostHandler");
 
+
 router.param("id", (req, res, next, id) => {
-  if (id) {
+  if (validator.isNumeric(id+'')) {
     req.previousId = id;
-    next();
-    return;
+    
+    return Promise.resolve('next')
   }
-  next(new Error("no id exists"));
+  return Promise.reject(new Error("must be numeric!"))
 });
 
 router.post(
@@ -39,10 +40,10 @@ router.post(
 router.param('uid',(req,res,next,id)=>{
   if(parseInt(id)>0){
     req.userId=id;
-    next()
+    return Promise.resolve('next')
   }
   else{
-    next(new Error("invalid User ID!"))
+    return Promise.reject(new Error("invalid User ID!"))
   }
 })
 router.param("lastid",(req,res,next,id)=>{
@@ -58,12 +59,11 @@ router.param('postid',(req,res,next,id)=>{
   try{
     if(id.trim().length){
       req.postid=id
-      next()
-      return
+      return Promise.resolve('next')
     }
-    throw new Error("no postid")
+    return Promise.reject(new Error("no postid"))
   }catch(e){
-    next(e)
+   return Promise.reject(e)
   }
 })
 router.get("/latest", getLatestPostsHandler);

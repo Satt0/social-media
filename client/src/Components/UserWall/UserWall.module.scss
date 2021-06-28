@@ -1,4 +1,4 @@
-
+@import "../../stylesheets/helpers/keyframes";
 
 .container{
     z-index: 1;
@@ -14,9 +14,12 @@
    
 }
 .background{
+    opacity: 0;
     background-image: url('./default.jpg');
     background-size: cover;
     background-position: center;
+    animation:showup .3s forwards;
+    animation-delay: 200ms;
     position: absolute;
     z-index: -1;
     top:0;

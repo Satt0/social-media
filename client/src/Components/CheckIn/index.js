@@ -6,12 +6,15 @@ import video from 'src/stylesheets/svg/video.svg'
 import PostEdit from '../PostEdit'
 import checkin from 'src/stylesheets/svg/checkin.svg'
 import { useSelector } from 'react-redux'
+import { useTheme } from "src/lib/hooks/useColor";
+
 export default function CheckIn({appendPost}) {
     const [openEditor,setOpenEditor]=useState(false)
     const userImage=useSelector(state => state.user.profileImage)
     const onClose=React.useCallback(()=>{setOpenEditor(false)},[])
+    const theme=useTheme()
     return (
-        <div className={styles.container}>
+        <div style={{backgroundColor:theme.background}} className={styles.container}>
                 {openEditor&&<PostEdit appendPost={appendPost} onClose={onClose}/>}
                 <div className={styles.CheckInItem}>
                 <Avatar size="large" userAvatar={userImage??null}/>

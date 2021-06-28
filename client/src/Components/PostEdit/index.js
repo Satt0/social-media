@@ -4,6 +4,7 @@ import { useMedia } from "src/lib/hooks/useMedia";
 import {Badge} from '@material-ui/core'
 import API from 'src/lib/API/UserAPI'
 import {useSelector} from 'react-redux'
+import {useTheme} from 'src/lib/hooks/useColor'
 function MyEditor({value,setValue}) {
   
   return (
@@ -24,7 +25,7 @@ function MyFileViewer({files,handleFiles}) {
       }
   },[handleFiles])
   return <div className={styles.fileViewerWrapper}>
-      {files.map((file,index)=><ImageReview onDelete={deleteFile(index)} index={index+1} file={file}/>)}
+      {files.map((file,index)=><ImageReview key={'file+'+index} onDelete={deleteFile(index)} index={index+1} file={file}/>)}
   </div>;
 }
 
@@ -58,8 +59,9 @@ function ImageReview({file,index,onDelete}){
 
 
 export default function PostEdit({ onClose,appendPost }) {
+  const theme=useTheme()
     const [editorState, setEditorState] = React.useState("");
-  const uid=useSelector(state=>state.user.uid)
+  const user=useSelector(state=>state.user)
   const fileRef = useRef(null);
   const [files,appendFile,handleFiles] = useMedia();
   const [viewFile,setViewFile]=useState(false)
@@ -86,11 +88,11 @@ export default function PostEdit({ onClose,appendPost }) {
  },[])
   useEffect(()=>{
     if(isLock===true){
-      if(uid && editorState.trim().length){
+      if(user.uid && editorState.trim().length){
         var data = new FormData()
         data.append('content', editorState)
         data.append('count', files.length)
-        data.append('uid', uid)
+        data.append('uid', user.uid)
         files.forEach((file)=>{
             data.append(`uploads`,file)
         })
@@ -98,8 +100,15 @@ export default function PostEdit({ onClose,appendPost }) {
         
         API.makePost(data).then(res=>{
             if(res.postid){
-  
-              appendPost(res)
+              const newPost={
+                ...res,
+                user:{
+                    userid:user.uid,
+                    userfullname:user.fullName,
+                    picture:user.profileImage
+                }
+              }
+              appendPost(newPost)
               setStatus({message:"success!"})
               onClose()
             }
@@ -112,11 +121,11 @@ export default function PostEdit({ onClose,appendPost }) {
         setLock(false)
        }
     }
-  },[isLock,uid,editorState,files,appendPost,onClose])
+  },[isLock,user.uid,editorState,files,appendPost,onClose])
 
 
   return (
-    <div className={styles.container}>
+    <div   className={styles.container} style={{backgroundColor:`rbga(${theme.background},.3)`}}>
       {/* files input hidden */}
       <div className={styles.hiddenInput}>
         <input
@@ -139,7 +148,7 @@ export default function PostEdit({ onClose,appendPost }) {
         }}
       ></div>
       {/* text editor */}
-      <div className={styles.editor}>
+      <div className={styles.editor} style={{backgroundColor:theme.background,color:theme.text}}>
         <div className={styles.userProfile}>
           <p>{!viewFile?'Write post':"Edit file ("+files.length+")"} <strong>{status.message}</strong></p>
         </div>

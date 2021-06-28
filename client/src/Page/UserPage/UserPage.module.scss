@@ -1,13 +1,14 @@
-
+@import "src/stylesheets/helpers/keyframes";
 
 .pageWrapper{
+   
+    animation:showup 1s backwards;
     max-width: calc(var(--app-max-width ) - 200px);
     min-height: 100vh;
     margin:0 auto;
     z-index: 919219;
-    background-color: rgba(175, 175, 175, 0.151);
-   
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding-bottom: 5vh;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 2px 9px 0px;
 }
 .CheckInWrapper{
     width:80%;

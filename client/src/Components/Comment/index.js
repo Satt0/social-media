@@ -2,28 +2,35 @@ import React from "react";
 import styles from "./Comment.module.scss";
 import { Drawer, useMediaQuery } from "@material-ui/core";
 import CommentItem from "./CommentItem";
-import API from "src/lib/API/UserAPI";
 import { useSelector } from "react-redux";
-function isElementInViewport(el) {
-  // Special bonus for those using jQuery
-  try {
-    if (typeof window) {
-      var rect = el.getBoundingClientRect();
+import { useLazyQuery ,useMutation} from "@apollo/client";
+import Query from "src/lib/API/Apollo/Queries";
+import { useSubscription } from "@apollo/client";
 
-      return rect.y > 0;
-    }
-    return false;
-  } catch (e) {
-    return false;
-  }
-}
 
 export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
-  const [comment, setComment] = React.useState(null);
+  const [comment, setComment] = React.useState([]);
   const [isLoad, setIsLoaded] = React.useState(false);
-  const [lastTrackedComment,setLastTracked]=React.useState(0)
+
+  
+  const getPostComment=useLazyQuery(Query.GET_POST_LATEST_COMMENT,{  fetchPolicy: "no-cache"
+})
+  const postNewComment=useMutation(Query.POST_COMMENT,{fetchPolicy:'no-cache'})
   const elRef = React.useRef(null);
   const userId = useSelector((state) => state.user.uid);
+ const [openDrawer,setSwitch]=React.useState(false)
+ const isMobile = useMediaQuery("(max-width:1000px)");
+
+  React.useEffect(()=>{
+       if(isMobile!==undefined && isMobile!==null){
+        if(isMobile&&onOpen&&!inMediaBrowser){
+          setSwitch(true)
+        }else{
+          setSwitch(false)
+        }
+       }
+  },[isMobile,inMediaBrowser,onOpen])
+
   React.useEffect(() => {
     if (onOpen) {
       setIsLoaded(true);
@@ -34,97 +41,21 @@ export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
       const newComment = {
         comment: { content: comment, userid: userId, postid: postID },
       };
-      const data = await API.userCommentPost(newComment).then((res) => {
-        const update={
-          update:{
-            lastid:lastTrackedComment,
-            postid:postID
-          }
-        }
-        API.updateCommentByLastID(update).then(res=>{
-          if(!res.err)
-          {
-            if(res?.rows?.length ){
-              setComment(state=>([...res.rows,...state]))
-              setLastTracked(res.rows[0].commentid)
-            }
-          }
-        })
-
-        return true;
-      });
-      return data;
+      postNewComment[0]({variables:newComment.comment})
+  
     };
   };
   React.useEffect(() => {
     if (isLoad) {
-      
-      API.getPostLatestComment(postID).then((res) => {
-        if(!res.err){
-          setComment(res.rows);
-        }
-      });
+      getPostComment[0]({variables:{postid:postID}})
     }
   }, [isLoad, postID]);
-
-  React.useEffect(() => {
-    let a;
-    if (isLoad && onOpen && postID) {
-      a = setInterval(() => {
-        if (isElementInViewport(elRef.current)) {
-          const update={
-            update:{
-              lastid:lastTrackedComment,
-              postid:postID
-            }
-          }
-          API.updateCommentByLastID(update).then(res=>{
-            if(!res.err){
-              if(res?.rows?.length){
-                setComment(state=>([...res.rows,...state]))
-                setLastTracked(res.rows[0].commentid)
-                console.log(res.rows[0].commentid);
-              }
-            }
-          })
-
-
-
-          // API.getPostLatestComment(postID).then((res) => {
-          //   console.log("test");
-          //   setComment((state) => {
-
-          //     try {
-          //       const newState = res.rows.filter(
-          //         (e) => e.commentid > state[0].commentid
-          //       );
-                  
-          //       return [...newState, ...state];
-          //     } catch (e) {
-          //       if(res?.rows.length){
-          //         return [...res.rows, ...state];
-          //       }
-          //       return state
-          //     }
-
-
-
-          //   });
-          //  if(res?.rows[0]?.commentid){
-          //   setLastTracked(res.rows[0].commentid)
-          //   console.log(res.rows[0].commentid);
-          //  }
-          // });
-        } else {
-          return;
-        }
-      }, 5000);
+  React.useEffect(()=>{
+    const data=getPostComment[1].data
+    if(data){
+      setComment(s=>([...s,...data.getPostCommentById]))
     }
-    return () => {
-      clearInterval(a);
-    };
-  }, [isLoad, onOpen, postID, comment,lastTrackedComment]);
-  const isMobile = useMediaQuery("(max-width:1000px)");
+  },[getPostComment[1].data])
   if (comment) {
     return (
       <div
@@ -133,21 +64,24 @@ export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
           onOpen ? styles.open : styles.close
         } ${inMediaBrowser ? styles.inMediaBrowser : ""}`}
       >
-        {isMobile && onOpen && (
-          <DrawerComment
+
+        {onOpen?openDrawer?<DrawerComment
             onPostComment={onPostComment(userId, postID)}
             comments={comment}
             onClose={onClose}
             isOpen={true}
-          />
-        )}
-        {onOpen && (
+          />:
           <ScrollComment
             onPostComment={onPostComment(userId, postID)}
             comments={comment}
             onClose={onClose}
-          />
-        )}
+          />:<></>}
+        
+          
+        
+      
+       
+        {onOpen&&postID&&<CommentListener update={setComment} postid={postID}/>}
       </div>
     );
   }
@@ -157,7 +91,6 @@ export default function Comment({ inMediaBrowser, onOpen, onClose, postID }) {
 
 const DrawerComment = ({ isOpen, onClose, comments, onPostComment }) => {
   const ref = React.useRef(null);
-
   const onSubmit = (e) => {
     e.preventDefault();
     if (ref.current.value.trim() !== "") {
@@ -176,7 +109,7 @@ const DrawerComment = ({ isOpen, onClose, comments, onPostComment }) => {
         {comments.map((cmt) => (
           <CommentItem
             data={cmt}
-            key={`comment${cmt.commentid}-${cmt.postid}-${cmt.userid}`}
+            key={`comment-drawer-${cmt.commentid}-${cmt.postid}-${cmt.userid}`}
           />
         ))}
       </div>
@@ -202,12 +135,22 @@ const ScrollComment = ({ comments, onClose, onPostComment }) => {
       </form>
       {comments.map((cmt) => (
         <CommentItem
-          key={`comment${cmt.commentid}-${cmt.postid}-${cmt.userid}`}
+          key={`comment-scroll-${cmt.commentid}-${cmt.postid}-${cmt.userid}`}
           data={cmt}
         />
       ))}
 
-      <h4 onClick={onClose}>hide comment</h4>
+      <h4>load older comment</h4>
     </div>
   );
 };
+const CommentListener=({postid,update})=>{
+  const {data,loading}=useSubscription(Query.UPDATE_COMMENT,{variables:{postid:postid}})
+ React.useEffect(()=>{
+    console.log(data);
+    if(data?.getComment){
+      update(s=>([data.getComment,...s]))
+    }
+  },[data])
+  return <></>
+}

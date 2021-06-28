@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Post from "src/Components/Post";
 import MediaBrowser from "../MediaBrowser";
-import InfiniteScroll from "react-infinite-scroll-component";
+// import InfiniteScroll from "react-infinite-scroll-component";
 import API from "src/lib/API/UserAPI";
-
+import { useLazyQuery } from "@apollo/client";
+import Query from "src/lib/API/Apollo/Queries";
 export default function NewsFeed({ posts, setPosts,byUID=false,uid }) {
   const [open, setOpen] = useState(false);
   const [currentPost, setCurrent] = useState(null);
   const [hasMore,setHasMore]=useState(true)
- 
+  const getAllPost=useLazyQuery(Query.GET_LATEST_POST,{fetchPolicy: "no-cache"})
+  const getUserPost=useLazyQuery(Query.GET_USER_LATEST_POST,{fetchPolicy: "no-cache"})
   const onUpdate = () => {
     if (posts.length > 0) {
         const  lastId = posts[posts.length - 1].postid;
@@ -36,77 +38,52 @@ export default function NewsFeed({ posts, setPosts,byUID=false,uid }) {
   
      useEffect(()=>{
         if(uid>=0 && byUID===true){
-            API.getAllPostById(uid).then(res=>{
-                if(res.count>0){
-                    setPosts(res.rows)
-
-                    if(res.count<10){
-                        setHasMore(false)
-                    }
-                }
-            }) 
+           
+            getUserPost[0]({variables:{userid:uid}}) 
+           
         }else{
-            API.getLatestPost().then((res) => {
-                if (!res.err) {
-                  setPosts(res.rows);
-                  if(res.count<10){
-                      setHasMore(false)
-                  }
-                }
-              });
-        }
-        return ()=>{
-            setPosts([])
+            getAllPost[0]()
         }
     },[uid,byUID])
-    
+    React.useEffect(()=>{
+      const data=getAllPost[1].data
+      if(data){
+        setPosts(data.getLatestPost)
+      }
+    },[getAllPost])
+    React.useEffect(()=>{
+      const data=getUserPost[1].data
+      if(data){
+         setPosts(data.getLatestPostByUserID)
+      }
+    },[getUserPost])
   const openBrowser = (index) => {
     return () => {
       setOpen(true);
-      setCurrent(posts[index]);
+      setCurrent(posts[index].postid);
     };
   };
-  if (posts[0]) {
+  if (posts.length>0) {
     return (
       <div>
         {currentPost&&<MediaBrowser
           open={open}
-          post={currentPost}
+          postid={currentPost}
           
           onClose={() => {
             setOpen(false);
           }}
         />}
-        <InfiniteScroll
-          dataLength={posts.length} //This is important field to render the next data
-          next={onUpdate}
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          endMessage={
-            <p style={{ textAlign: "center" ,marginTop:10}}>
-              <b>No more Posts!</b>
-            </p>
-          }
-          // below props only if you need pull down functionality
-          // refreshFunction={onRefresh}
-          // pullDownToRefresh
-          // pullDownToRefreshThreshold={50}
-          // pullDownToRefreshContent={
-          //   <h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>
-          // }
-          // releaseToRefreshContent={
-          //   <h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
-          // }
-        >
+        
           {posts.map((data, index) => (
             <Post
                 propsStyle={{marginBottom:17}}
               onOpen={openBrowser(index)}
-              key={"post-id-" + index}
+              key={"post-id-" + data.postid}
               data={data}
             />
           ))}
-        </InfiniteScroll>
+       
       </div>
     );
   }

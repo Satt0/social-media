@@ -6,9 +6,22 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import { useLogin } from "src/lib/hooks/useLogin";
 import store from "src/ReduxStore/store";
+import url from "./lib/API/URL";
 import "src/stylesheets/css/global.css";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  
+} from "@apollo/client";
+import { splitLink } from "./lib/API/Apollo/Link";
+const client = new ApolloClient({
+  link: splitLink,
+  cache: new InMemoryCache()
+});
 
 const Loader = () => {
+  
   const isLoggedIn = useLogin();
   if (isLoggedIn !== null) {
     if (isLoggedIn === true) {
@@ -26,8 +39,10 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <Router>
+        <ApolloProvider client={client}>
         <Loader />
-        {/* <PostEdit/> */}
+    
+  </ApolloProvider>
       </Router>
     </Provider>
   </React.StrictMode>,

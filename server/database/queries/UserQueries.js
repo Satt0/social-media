@@ -61,6 +61,12 @@ const LoginUser = async (user) => {
           picture: data.picture,
           gender: data.gender,
         },
+        graphql:{
+          userid:data.userid,
+          userfullname:data.userfullname,
+          userdisplayname:data.userdisplayname,
+          picture:data.picture
+        }
       };
     }
     throw new Error("can't get user");
@@ -114,7 +120,7 @@ const registerByFacebook = async (user) => {
 const getUserInformationById = async (userId) => {
   try {
     const response = await db.query(
-      `select userid as uid,userfullname,userdisplayname,picture from useraccount 
+      `select userid as uid,userid,userfullname,userdisplayname,picture from useraccount 
         where userid=$1;`,
       [userId]
     );

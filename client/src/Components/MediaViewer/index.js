@@ -61,7 +61,6 @@ const Image = ({ image ,ctnDimension}) => {
         const image=e.target
         const thisWidth=image.offsetWidth
         const thisHeight=image.offsetHeight
-        console.log(ctnDimension,thisWidth,thisHeight);
         if(thisWidth > ctnDimension.width){
           setMoreWidth(true)
         }

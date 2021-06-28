@@ -1,18 +1,26 @@
-$text-color: rgba(128, 128, 128, 0.623);
+$text-color: rgb(255, 255, 255);
 .container {
   display: flex;
   align-items: center;
   min-height: 100vh;
+  background-image: url('../../stylesheets//images/jennie.jpg');
+  background-position: left top;
+  background-size: cover;
 }
 
 .Form {
   display: flex;
   flex-direction: column;
+  //backdrop-filter: blur(1px);
+  ::placeholder{
+    color:white;
+  }
   max-width: 400px;
   padding: 40px 15px;
   margin: 0 auto;
-  box-shadow: rgba(100, 100, 111, 0.192) 0px 4px 14px 0px;
+  box-shadow: rgba(100, 100, 111, 0.192) 0px 2px 10px 0px;
   border-radius: 4px;
+  
   input {
     border: 1px solid transparent;
     transition: all 0.2s;

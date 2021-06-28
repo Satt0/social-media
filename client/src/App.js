@@ -1,7 +1,7 @@
 import Layout from './Components/Layout'
 import {Switch,Route} from 'react-router-dom'
 import routes from 'src/Page/route'
-// import ChatBubble from 'src/Components/ChatBubble';
+import ChatBubble from 'src/Components/ChatBubble';
 function App() {
   return (
     <Layout>

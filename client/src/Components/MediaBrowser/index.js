@@ -1,10 +1,11 @@
-import React from 'react'
+import React,{useState} from 'react'
 import style from './MediaBrowser.module.scss'
 import Post from '../Post';
 import MediaViewer from '../MediaViewer'
 import minimize from 'src/stylesheets/svg/minimize.svg'
-export default function MediaBrowser({open=false,onClose,post}) {
-   
+import {getPostById} from 'src/lib/API/Graphql'
+export default function MediaBrowser({open=false,onClose,postid=null}) {
+    const [post,setPost]=useState({})
     React.useEffect(()=>{
         if(typeof document){
            if(open){
@@ -14,13 +15,26 @@ export default function MediaBrowser({open=false,onClose,post}) {
            }
 
         }
-    })
-
-    if(open&&post?.postid){
+    },[open])
+    React.useEffect(()=>{
+        if(postid>=0){
+            getPostById(postid).then(res=>{
+                if(res.data){
+                    
+                        setPost(res.data.getPostInformationById)
+                    
+                }
+            })
+        }
+        return ()=>{
+            document.body.style.overflow = '';
+        }
+    },[open,postid])
+    if(open){
         return (<>
         
          <div  className={style.container}>
-               <div className={`${style.postWrapper} ${post.media!=="[]"?style.hasMedia:style.noMedia}`}>
+              {post.postid&& <div className={`${style.postWrapper} ${post.media!=="[]"?style.hasMedia:style.noMedia}`}>
                {post?.media!=="[]"&&<div className={style.mediaViewer}>
                 <button className={style.closeButton} onClick={onClose}>
                     <img src={minimize} alt="exit media"/>
@@ -29,8 +43,7 @@ export default function MediaBrowser({open=false,onClose,post}) {
                 <MediaViewer media={JSON.parse(post.media)}/>
                 </div>}
                    <Post type="detail" data={post}/>
-               </div>
-               {/* <div className={style.overlay} onClick={onClose}></div> */}
+               </div>}
             </div>
         </>
            
