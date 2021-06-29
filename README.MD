@@ -1,6 +1,6 @@
 # Social media Project
 ## Usings
-	1. React.js
-	2. Gin-Gonic 
-	3. Mongodb
+	1. React.js + Apollo client
+	2. Express.js + Apollo server 
+	3. Postgres
 ## UPDATING!
