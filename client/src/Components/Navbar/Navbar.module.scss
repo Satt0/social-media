@@ -40,3 +40,36 @@
        @extend %image;
     }
 }
+.dropdown{
+    max-width:400px;
+    width:100vw;
+    max-height:500px;
+    position: absolute;
+    border-radius: 6px;
+    overflow: auto;
+    right:0;
+    top:130%; 
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    @media screen and(max-width:600px) {
+        position: fixed;
+        max-width: unset;
+        top:70px;
+        left:0;
+    }
+}
+.messageHistory{
+    
+    position: relative;
+    width: 100%;
+}
+.wrapper{
+    transition: all .3s;
+    width:95%;
+    border-radius: 5px;
+    margin:0 auto;
+    cursor: pointer;
+    &:hover{
+        background-color: rgba(128, 128, 128, 0.24);
+
+    }
+}

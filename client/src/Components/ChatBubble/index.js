@@ -5,7 +5,7 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import Query from "src/lib/API/Apollo/Queries";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "src/lib/hooks/useColor";
-import { Badge, withStyles } from "@material-ui/core";
+import { Badge, withStyles,useMediaQuery } from "@material-ui/core";
 const StyledBadge = withStyles((theme) => ({
   badge: {
     right: 0,
@@ -42,7 +42,7 @@ export default function ChatBubble({ conversation, newMessage }) {
           ))}
       </div>
       <div className={styles.bubbleContainer}>
-        {conversation.map((c, i) => (
+        {conversation.filter(e=>e.state==="hide").map((c, i) => (
           <Conversation
             newMessage={newMessage}
             handleOpen={onOpen}
@@ -76,23 +76,23 @@ const Conversation = ({ data, handleOpen, newMessage }) => {
       newMessage.waitAllMessage.messageid !== message?.messageid
     ) {
       setMessage(newMessage.waitAllMessage);
-      if (data.state !== "open") {
+      
         setCount((c) => c + 1);
-      } else {
-        setCount(0);
-      }
+      
     }
+
+    
   }, [newMessage, data, message]);
-  React.useEffect(() => {
-    if (data.state === "open") {
-      setCount(0);
-    }
-  }, [data.state]);
+  React.useEffect(()=>{
+    setCount(0)
+    
+  },[])
   return (
     <div
       className={styles.bubbleItem}
       onClick={() => {
         handleOpen(data);
+        setCount(0)
       }}
     >
       <StyledBadge
@@ -104,6 +104,7 @@ const Conversation = ({ data, handleOpen, newMessage }) => {
           size="medium"
         />
       </StyledBadge>
+      
     </div>
   );
 };
@@ -115,6 +116,7 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
   const getUserLazy = useLazyQuery(Query.GET_USER_INFORMATION);
   const [userState, setUserState] = React.useState({});
   const [inputVal, setVal] = React.useState("");
+  const isMobile=useMediaQuery("(max-width:600px)")
   const theme = useTheme();
   const bodyRef = React.useRef(null);
   const getAllComment = useQuery(Query.GET_CONVERSATION_MESSAGE, {
@@ -146,7 +148,7 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
         setMessage([newMessage?.waitAllMessage ?? [...[]]]);
       }
     }
-  }, [newMessage, thisEl]);
+  }, [newMessage, thisEl,message]);
   React.useEffect(() => {
     const { userid1, userid2 } = thisEl;
 
@@ -166,7 +168,17 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
     };
     scrollToBottom(bodyRef.current);
   }, [message]);
-
+React.useEffect(()=>{
+  
+  if(isMobile && thisEl.state==='open'){
+    document.body.style.overflow="hidden"
+  }else{
+    document.body.style.overflow=""
+  }
+  return ()=>{
+    document.body.style.overflow=""
+  }
+},[isMobile,thisEl.state])
   const onSubmit = (e) => {
     e.preventDefault();
    
@@ -239,7 +251,7 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
         {/* <div  className={styles.scrollToBottom}></div> */}
       </div>
       <div className={styles.form}>
-        <form onSubmit={onSubmit}>
+        <form className={isMobile&&thisEl.state==='open'?styles.formSticky:''} onSubmit={onSubmit}>
           <input
             value={inputVal}
             onChange={(e) => {
@@ -260,7 +272,6 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
 
 const MessageItem = ({ text, isthisuser, avatar, nextUID }) => {
   const ref = React.useRef();
-  console.log(nextUID);
   React.useEffect(() => {
     if (ref?.curent) {
       ref.current.scrollIntoView();

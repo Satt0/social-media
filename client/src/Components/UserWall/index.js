@@ -29,7 +29,7 @@ export default function UserWall({user,isLocal}) {
     }
     React.useEffect(()=>{
         if(data?.initConversation){
-            dispatch({type:"addConversation",payload:{...data.initConversation,state:'open'}})
+            dispatch({type:"addConversation",payload:{...data.initConversation,force:true,state:'open'}})
         }
     },[data])
     return (

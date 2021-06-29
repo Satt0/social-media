@@ -102,6 +102,7 @@ export default function PostEdit({ onClose,appendPost }) {
             if(res.postid){
               const newPost={
                 ...res,
+                datecreated:Date.now(),
                 user:{
                     userid:user.uid,
                     userfullname:user.fullName,
@@ -114,6 +115,7 @@ export default function PostEdit({ onClose,appendPost }) {
             }
         }).catch(e=>{
           setStatus({message:"post failed!"})
+          setLock(false)
         })
        }else{
          

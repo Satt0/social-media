@@ -1,7 +1,7 @@
 import { split, HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
-// const host=false?'192.168.1.8:4000':"192.168.1.48:4000"
+//const host=true?'192.168.1.8:4000':"192.168.1.48:4000"
 const host=(window.location.host);
 const httpLink = new HttpLink({
   uri: `http://${host}/graphql`
