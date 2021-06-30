@@ -18,7 +18,7 @@ const {
 } = require("../database/queries/MessageQueries");
 const { getUserInformationById } = require("../database/queries/UserQueries");
 const { withFilter } = require("graphql-subscriptions");
-
+const {authenticate}=require('../ultilities/resolverAuthentication')
 const COMMENT_ADDED = "newComment";
 const MESSAGE_ADDED = "newMessage";
 
@@ -27,9 +27,9 @@ const resolvers = {
     async getLatestPostByUserID(_, { userid }, __) {
       return await getUserPostById(userid).then((res) => res.rows);
     },
-    async getLatestPost() {
+     getLatestPost:authenticate(async()=> {
       return await getLatestPosts().then((res) => res.rows);
-    },
+    }),
     async getUserInformation(_, { userid }, __) {
       return await getUserInformationById(userid).then((res) => ({
         ...res.rows[0],
@@ -141,30 +141,12 @@ const resolvers = {
         return payload;
       },
     },
-    // waitMessageOneConversation: {
-    //   subscribe: withFilter(
-    //     (_, __, ctx) => ctx.pubsub.asyncIterator(MESSAGE_ADDED),
-    //     (payload, variables) => {
-    //       const condition_1= (parseInt(payload.receiver) === parseInt(variables.input.userid) ||
-    //       parseInt(payload.userid) === parseInt(variables.input.userid))
-          
-    //       return (
-    //         // condition_1 &&
-    //         payload.conversationid === variables.input.conversationid
-    //       );
-    //     }
-    //   ),
-    //   resolve: (payload) => {
-    //     return payload;
-    //   },
-    // },
+    
     waitAllMessage: {
       subscribe: withFilter(
         (_, __, ctx) => ctx.pubsub.asyncIterator(MESSAGE_ADDED),
         (payload, variables) => {
-          //const condition=parseInt(payload.receiver) === parseInt(variables.userid) 
           const test=parseInt(payload.receiver) === parseInt(variables.userid) || parseInt(payload.userid) === parseInt(variables.userid) 
-           // console.log(test);
           return test
         }
       ),

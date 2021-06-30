@@ -1,11 +1,15 @@
 import React from "react";
 import styles from "./ChatBubble.module.scss";
 import Avatar from "../Avatar";
+import {Link} from 'react-router-dom'
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import Query from "src/lib/API/Apollo/Queries";
+import MinimizeIcon from "@material-ui/icons/Minimize";
+import CloseIcon from "@material-ui/icons/Close";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "src/lib/hooks/useColor";
-import { Badge, withStyles,useMediaQuery } from "@material-ui/core";
+import { Badge, withStyles, useMediaQuery } from "@material-ui/core";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 const StyledBadge = withStyles((theme) => ({
   badge: {
     right: 0,
@@ -42,14 +46,16 @@ export default function ChatBubble({ conversation, newMessage }) {
           ))}
       </div>
       <div className={styles.bubbleContainer}>
-        {conversation.filter(e=>e.state==="hide").map((c, i) => (
-          <Conversation
-            newMessage={newMessage}
-            handleOpen={onOpen}
-            data={c}
-            key={"cvst-" + c.conversationid}
-          />
-        ))}
+        {conversation
+          .filter((e) => e.state === "hide")
+          .map((c, i) => (
+            <Conversation
+              newMessage={newMessage}
+              handleOpen={onOpen}
+              data={c}
+              key={"cvst-" + c.conversationid}
+            />
+          ))}
       </div>
     </div>
   );
@@ -76,27 +82,23 @@ const Conversation = ({ data, handleOpen, newMessage }) => {
       newMessage.waitAllMessage.messageid !== message?.messageid
     ) {
       setMessage(newMessage.waitAllMessage);
-      
-        setCount((c) => c + 1);
-      
-    }
 
-    
+      setCount((c) => c + 1);
+    }
   }, [newMessage, data, message]);
-  React.useEffect(()=>{
-    setCount(0)
-    
-  },[])
+  React.useEffect(() => {
+    setCount(0);
+  }, []);
   return (
     <div
       className={styles.bubbleItem}
       onClick={() => {
         handleOpen(data);
-        setCount(0)
+        setCount(0);
       }}
     >
       <StyledBadge
-        badgeContent={messageCount < 9 ? messageCount : "9+"}
+        badgeContent={messageCount < 9 ? data?.count : "9+"}
         color="secondary"
       >
         <Avatar
@@ -104,7 +106,6 @@ const Conversation = ({ data, handleOpen, newMessage }) => {
           size="medium"
         />
       </StyledBadge>
-      
     </div>
   );
 };
@@ -116,7 +117,7 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
   const getUserLazy = useLazyQuery(Query.GET_USER_INFORMATION);
   const [userState, setUserState] = React.useState({});
   const [inputVal, setVal] = React.useState("");
-  const isMobile=useMediaQuery("(max-width:600px)")
+  const isMobile = useMediaQuery("(max-width:600px)");
   const theme = useTheme();
   const bodyRef = React.useRef(null);
   const getAllComment = useQuery(Query.GET_CONVERSATION_MESSAGE, {
@@ -132,7 +133,7 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
       setMessage((s) => [...newArr]);
     }
   }, [getAllComment]);
- 
+
   React.useEffect(() => {
     const isThisConver =
       newMessage?.waitAllMessage.conversationid === thisEl.conversationid;
@@ -148,7 +149,7 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
         setMessage([newMessage?.waitAllMessage ?? [...[]]]);
       }
     }
-  }, [newMessage, thisEl,message]);
+  }, [newMessage, thisEl, message]);
   React.useEffect(() => {
     const { userid1, userid2 } = thisEl;
 
@@ -168,35 +169,33 @@ const ChatDialog = ({ onHide, thisEl, onClose, newMessage }) => {
     };
     scrollToBottom(bodyRef.current);
   }, [message]);
-React.useEffect(()=>{
-  
-  if(isMobile && thisEl.state==='open'){
-    document.body.style.overflow="hidden"
-  }else{
-    document.body.style.overflow=""
-  }
-  return ()=>{
-    document.body.style.overflow=""
-  }
-},[isMobile,thisEl.state])
+  React.useEffect(() => {
+    if (isMobile && thisEl.state === "open") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobile, thisEl.state]);
   const onSubmit = (e) => {
     e.preventDefault();
-   
-      const receiver =
-        thisEl.userid1 === userid ? thisEl.userid2 : thisEl.userid1;
 
-      if (receiver && userid) {
-        sendMessage({
-          variables: {
-            userid: userid,
-            receiver: receiver,
-            conversationid: thisEl.conversationid,
-            content: inputVal.length>0?inputVal:"👍",
-          },
-        });
-        setVal("");
-      }
-    
+    const receiver =
+      thisEl.userid1 === userid ? thisEl.userid2 : thisEl.userid1;
+
+    if (receiver && userid) {
+      sendMessage({
+        variables: {
+          userid: userid,
+          receiver: receiver,
+          conversationid: thisEl.conversationid,
+          content: inputVal.length > 0 ? inputVal : "👍",
+        },
+      });
+      setVal("");
+    }
   };
 
   return (
@@ -205,28 +204,28 @@ React.useEffect(()=>{
         thisEl.state === "open" ? styles.chatOpen : styles.chatHidden
       }`}
     >
+      {isMobile && userState?.userid?<MobileHeader onClose={()=>{onClose(thisEl.conversationid)}} onHide={()=>{onHide(thisEl.conversationid)}} user={{name:userState?.userfullname,id:userState.userid,picture:userState?.picture}}/>:(
       <div
         className={styles.header}
         style={{ backgroundColor: theme.backgroundPost }}
       >
         <p>{userState?.userfullname || "loading"}</p>
-        <button
-          className="button"
-          onClick={() => {
-            onHide(thisEl.conversationid);
-          }}
-        >
-          hide
-        </button>
-        <button
-          className="button"
-          onClick={() => {
-            onClose(thisEl.conversationid);
-          }}
-        >
-          close
-        </button>
-      </div>
+
+        <div className={styles.buttonWrapper}>
+          <MinimizeIcon
+            onClick={() => {
+              onHide(thisEl.conversationid);
+            }}
+          />
+        </div>
+        <div className={styles.buttonWrapper}>
+          <CloseIcon
+            onClick={() => {
+              onClose(thisEl.conversationid);
+            }}
+          />
+        </div>
+      </div>)}
       <div className={styles.body} ref={bodyRef}>
         <div className={styles.bodyContent} ref={bodyRef}>
           {message.map((e, i) => (
@@ -248,28 +247,52 @@ React.useEffect(()=>{
             </div>
           ))}
         </div>
-        {/* <div  className={styles.scrollToBottom}></div> */}
+       
       </div>
       <div className={styles.form}>
-        <form className={isMobile&&thisEl.state==='open'?styles.formSticky:''} onSubmit={onSubmit}>
+        <form
+          className={
+            isMobile && thisEl.state === "open" ? styles.formSticky : ""
+          }
+          onSubmit={onSubmit}
+        >
           <input
             value={inputVal}
             onChange={(e) => {
               setVal(e.target.value);
             }}
             type="text"
-            
             placeholder="enter your message"
           />
-          <button style={{backgroundColor:inputVal.length>0?"":"transparent"}} className="button" type="submit">
-            {inputVal.length>0?"send":"👍"}
+          <button
+            style={{
+              backgroundColor: inputVal.length > 0 ? "" : "transparent",
+            }}
+            className="button"
+            type="submit"
+          >
+            {inputVal.length > 0 ? "send" : "👍"}
           </button>
         </form>
       </div>
     </div>
   );
 };
-
+const MobileHeader=({user,onClose,onHide})=>{
+  return <div className={styles.mobileHeader}>
+      <div  onClick={onHide}>
+    <ArrowBackIcon/>
+      </div>
+      <div onClick={onHide} className={styles.userGroup}>
+      <Link to={`/user/${user.id}`}>
+      <Avatar userAvatar={user?.picture}/>
+        <p>{user?.name}</p></Link>
+      </div>
+      <div>
+    <CloseIcon onClick={onClose}/>
+      </div>
+  </div>
+}
 const MessageItem = ({ text, isthisuser, avatar, nextUID }) => {
   const ref = React.useRef();
   React.useEffect(() => {
@@ -290,7 +313,19 @@ const MessageItem = ({ text, isthisuser, avatar, nextUID }) => {
         <></>
       )}
       <div>
-        <p style={text.trim()==='👍'?{fontSize:"2rem",background:"transparent",boxShadow:"unset"}:{}}>{text}</p>
+        <p
+          style={
+            text.trim() === "👍"
+              ? {
+                  fontSize: "2rem",
+                  background: "transparent",
+                  boxShadow: "unset",
+                }
+              : {}
+          }
+        >
+          {text}
+        </p>
       </div>
     </div>
   );

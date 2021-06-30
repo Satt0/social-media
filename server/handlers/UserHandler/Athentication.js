@@ -4,7 +4,9 @@ const {registerUser,LoginUser,registerByFacebook}=require('../../database/querie
 const RegisterHandler=async(req,res,next)=>{
     
     try{
-        res.status(201).json({status:true,user:await registerUser(req.userVerified)})
+        const result=await registerUser(req.userVerified);
+        req.session.user=result
+        res.status(201).json({status:true,user:result})
     }
     catch(e){
         next(e)
@@ -13,7 +15,9 @@ const RegisterHandler=async(req,res,next)=>{
 
 const LoginHandler=async (req,res,next)=>{
         try{
-            return res.json(await LoginUser(req.userVerified))
+            const result=await LoginUser(req.userVerified)
+            req.session.user=result.user
+            return res.json(result)
         }
         catch(e)
         {

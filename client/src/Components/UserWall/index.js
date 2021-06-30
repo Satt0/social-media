@@ -42,7 +42,7 @@ export default function UserWall({user,isLocal}) {
        <div className={styles.group}>
        <Avatar size="large" userAvatar={isLocal?localUser?.profileImage:user?.picture}/>
         <p>{isLocal?localUser?.fullName:user?.userfullname}</p>
-        <button onClick={onInitConversation}>message</button>
+        {!isLocal&&        <button className="button" onClick={onInitConversation}>message</button>}
        </div>
         </div>
            <div className={styles.background} >

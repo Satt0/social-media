@@ -14,13 +14,13 @@ const message = (state = defaultState, action) => {
       (e) => e.conversationid === action.payload.conversationid
     );
     if (found) {
-      const newState =old.map(e=>e.conversationid===found.conversationid?{...e,lastmessage: action.payload.lastmessage,state:found.state==='open' || action.payload.force===true?'open':'hide' }:e)
+      const newState =old.map(e=>e.conversationid===found.conversationid?{...e,count:e.state==='hide'?e.count+1:0,lastmessage: action.payload.lastmessage,state:found.state==='open' || action.payload.force===true?'open':'hide' }:e)
   
       return { ...state, Conversation: newState };
     }
 
     const newState = [
-      action.payload,
+      {...action.payload,count:action.payload.count||0},
       ...old.filter((e) => e.conversationid !== action.payload.conversationid),
     ];
 
@@ -43,7 +43,7 @@ const message = (state = defaultState, action) => {
     const old = [...state.Conversation];
     const newState = old.map((e) => {
       if (id === e.conversationid) {
-        return { ...e, state: "hide" };
+        return { ...e, state: "hide",count:0 };
       }
       return e;
     });

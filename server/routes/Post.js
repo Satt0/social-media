@@ -21,6 +21,16 @@ const {
 } = require("../handlers/PostHandler");
 
 
+
+router.use((req,res,next)=>{
+  if(!req.session.user){
+    console.log(req.session.user);
+  return  next(new Error("not authorized"))
+  }
+  next()
+
+})
+
 router.param("id", (req, res, next, id) => {
   if (validator.isNumeric(id+'')) {
     req.previousId = id;
@@ -29,6 +39,8 @@ router.param("id", (req, res, next, id) => {
   }
   return Promise.reject(new Error("must be numeric!"))
 });
+
+
 
 router.post(
   "/newpost",

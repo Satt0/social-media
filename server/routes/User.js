@@ -26,7 +26,12 @@ router.param('uid',(req,res,next,id)=>{
     }
 })
 
-
+router.get("/resume",(req,res,next)=>{
+  if(req.session.user){
+    return res.json({user:req.session.user})
+  }
+  return res.json({err:"no data"})
+})
 router.post("/signup", validUserRegister, RegisterHandler);
 
 router.post("/login", validUserLogin, LoginHandler);
@@ -36,16 +41,14 @@ router.post("/fbsignup", validFacebookUserRegister, (req, res) => {
 });
 router.post("/fblogin", validFacebookUserLogin, authFaceBookHandler);
 
-router.get('/information/:uid',getUserInformationByIdHandler)
+router.use('/avatar',(req,res,next)=>{
+  if(req.session.user){
+   return next()
+  }
+  return next(new Error("you are not allowed")) 
+})
 router.put('/avatar/:uid',upload.single('avatar'),saveAvatar,setUserNewAvatarHandler)
 
 
-router.get('/cookies',(req,res)=>{
-  if(req.session.user){
-    res.send(req.session.user)
-  }else{
-   req.session.user="tan"
-   res.send('inited')
-  }
- })
+
 module.exports = router;

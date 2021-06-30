@@ -4,8 +4,8 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
-// var session = require('express-session')
-const { PubSub } = require("apollo-server");
+var session = require('express-session')
+const { PubSub ,AuthenticationError} = require("apollo-server");
 
 const pubsub = new PubSub();
 
@@ -31,12 +31,12 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(session({
-//   secret: 'keyboard cat',
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: { secure: false }
-// }))
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}))
 
 app.use("/api/user", userRouter);
 
@@ -47,10 +47,7 @@ app.use("/api/post", postRouter);
 // catch 404 and forward to error handler
 
 // for ssr react app
-// app.use(express.static('client'))
-// app.get('/*',(req,res,next)=>{
-//   res.sendFile(path.join(__dirname,'client/index.html'))
-// })
+
 
 // error handler
 
@@ -59,17 +56,22 @@ app.use("/api/post", postRouter);
 const apolloServer = new ApolloServer({
   schema: schema,
   context: ({ req }) => {
-    return {
-      ...req,
-      pubsub,
-    };
+    const user=req?.session?.user || null
+      return {
+        ...req,
+        pubsub,
+        user
+      };
   },
 });
 const server = createServer(app);
 
 apolloServer.applyMiddleware({ app });
 apolloServer.installSubscriptionHandlers(server);
-
+app.use(express.static('client'))
+app.get('/*',(req,res,next)=>{
+ res.sendFile(path.join(__dirname,'client/index.html'))
+})
 app.use(function (req, res, next) {
   next(createError(404));
 });

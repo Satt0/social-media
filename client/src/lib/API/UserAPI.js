@@ -160,6 +160,13 @@ const API = {
       catch(e){
         return {err:"not found"}
       }
+  },
+  async resumeUserSession(){
+    try{
+        return await fetch(`${url.dev}/user/resume`).then(res=>res.json())
+    }catch(e){
+      return {err:true}
+    }
   }
 };
 
